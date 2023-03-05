@@ -25,7 +25,7 @@ class RestaurantsPage extends StatelessWidget {
                 ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemBuilder: (context,state)=>restaurantItemBuilder(),
+                    itemBuilder: (context,state)=>restaurantItemBuilder(context),
                     separatorBuilder: (context,state)=> myDivider(),
                     itemCount: 5
                 ),

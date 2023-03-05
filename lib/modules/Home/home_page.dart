@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
                 ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemBuilder: (context,index)=>mealItemBuilder(),
+                    itemBuilder: (context,index)=>mealItemBuilder(context),
                     separatorBuilder: (context,index)=> myDivider(),
                     itemCount: 5,
                 ),

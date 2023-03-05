@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../modules/Meal_Details/meal_details.dart';
+import '../../modules/Restaurants/restaurant_page.dart';
+
 Widget defaultFormField({
   required TextEditingController controller,
   required TextInputType keyboard,
@@ -134,12 +137,13 @@ Widget myDivider({Color? c=Colors.grey, double padding=0}) => Container(height: 
 //------------------------------------------------------------------------\\
 
 //Meal Item Builder
-Widget mealItemBuilder()
+Widget mealItemBuilder(BuildContext context)
 {
   return GestureDetector(
     onTap: ()
     {
       // navigateTo(context, ShowItem(model: model,));
+      navigateTo(context, const MealDetails());
     },
     child: Column(
       children: [
@@ -192,8 +196,9 @@ Widget mealItemBuilder()
                         // cubit.alterFavourites(model.recipe!);
                       },
                       icon: const Icon(
-                        Icons.star_outline,
-                        size: 25,
+                        Icons.favorite_border_rounded,
+                        size: 20,
+                        color: Colors.red,
                       )
                   ),
 
@@ -229,12 +234,12 @@ Widget mealItemBuilder()
 
 // Restaurant Item Builder
 
-Widget restaurantItemBuilder()
+Widget restaurantItemBuilder(BuildContext context)
 {
   return GestureDetector(
     onTap: ()
     {
-      // navigateTo(context, ShowItem(model: model,));
+      navigateTo(context, const RestaurantPage());
     },
     child: Column(
       children: [
