@@ -15,6 +15,7 @@ class HomePage extends StatelessWidget {
       listener: (context,state){},
       builder: (context,state)
       {
+        var cubit= AppCubit.get(context);
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -63,7 +64,7 @@ class HomePage extends StatelessWidget {
                 ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemBuilder: (context,index)=>mealItemBuilder(context),
+                    itemBuilder: (context,index)=>mealItemBuilder(context,cubit),
                     separatorBuilder: (context,index)=> myDivider(),
                     itemCount: 5,
                 ),

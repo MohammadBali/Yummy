@@ -3,6 +3,8 @@ import 'package:hexcolor/hexcolor.dart';
 
 Color goldenColor=HexColor('FFBE0B');
 
+Color steelTealColor= HexColor('5f8a8b');
+
 MaterialColor defaultColor= Colors.blue;
 
 MaterialColor defaultDarkColor= Colors.deepOrange;

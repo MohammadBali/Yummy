@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/styles/styles.dart';
 
 import '../../shared/styles/colors.dart';
@@ -18,6 +19,21 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
   PageController pageController = PageController();
 
+  ScrollController scrollController= ScrollController();
+
+  final ItemScrollController itemScrollController = ItemScrollController();
+
+
+  void scrollToIndex(int index)
+  {
+    itemScrollController.scrollTo(
+        index: index,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOutCubic);
+  }
+
+
+
   @override
   void initState()
   {
@@ -28,6 +44,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
   void dispose()
   {
     pageController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -39,82 +56,147 @@ class _RestaurantPageState extends State<RestaurantPage> {
         builder: (context,state)
         {
           var cubit= AppCubit.get(context);
-          return Scaffold(
-            appBar: AppBar(
-              actions:
-              [
-                IconButton(
-                    onPressed: ()
-                    {
-                      cubit.changeTheme();
-                    },
-                    icon: const Icon(Icons.sunny)
-                ),
-              ],
+          return WillPopScope(
+            child: Scaffold(
+              appBar: AppBar(
+                actions:
+                [
+                  IconButton(
+                      onPressed: ()
+                      {
+                        cubit.changeTheme();
+                      },
+                      icon: const Icon(Icons.sunny)
+                  ),
+                ],
+              ),
+
+              body: Column(
+                children:
+                [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Container(
+                      width: double.infinity,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                          image: AssetImage('assets/images/american_diner.jpg'),
+                          fit: BoxFit.fitWidth,
+                          opacity: 0.35,
+
+                        ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Center(
+                            child: Text(
+                              'Roadhouse Diner',
+                              style: defaultRestaurantNameTextStyle,
+                            )
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20,),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 30,
+                      child: ScrollablePositionedList.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemScrollController: itemScrollController,
+                        shrinkWrap: true,
+                        itemBuilder: (context,index)
+                        {
+                          return GestureDetector(
+                            onTap: ()
+                            {
+                              cubit.changeCurrentItemList(index);
+                              pageController.jumpToPage(index);
+                              scrollToIndex(index);
+                            },
+                            child: Text(
+                              "${cubit.itemsList[index]} ",
+                              style:TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 20,
+                                color: cubit.isCurrentItemList(index)? defaultColor : null
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context,index)=>  SizedBox(width: 10, child: Text('|', style:  TextStyle(fontSize: 20, color: steelTealColor, fontWeight: FontWeight.w500),),),
+                        itemCount: cubit.itemsList.length
+                      ),
+                    ),
+                  ),
+
+                  // SmoothPageIndicator(
+                  //   controller: pageController,
+                  //   count: 3,
+                  //   effect:  ExpandingDotsEffect
+                  //     (
+                  //     dotColor: Colors.grey,
+                  //     activeDotColor: AppCubit.get(context).isDarkTheme ? defaultDarkColor : defaultColor,
+                  //     dotHeight: 10,
+                  //     dotWidth: 10,
+                  //     expansionFactor: 3,
+                  //     spacing: 5,
+                  //   ),
+                  // ),
+
+                  Expanded(
+                    child: PageView.builder(
+                      scrollDirection: Axis.horizontal,
+                      controller: pageController,
+                      itemCount: cubit.itemsList.length,
+                      itemBuilder: (context,index)=> restaurantMealsItemBuilder(context,cubit,index+1),
+                      onPageChanged: (int index)
+                      {
+                        scrollToIndex(index);
+                        cubit.changeCurrentItemList(index);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
 
-            body: Column(
-              children:
-              [
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Center(
-                      child: Text(
-                        'Roadhouse Diner',
-                        style: defaultRestaurantNameTextStyle,
-                      )
-                  ),
-                ),
-
-                const SizedBox(height: 5,),
-
-                SmoothPageIndicator(
-                  controller: pageController,
-                  count: 3,
-                  effect:  ExpandingDotsEffect
-                    (
-                    dotColor: Colors.grey,
-                    activeDotColor: AppCubit.get(context).isDarkTheme ? defaultDarkColor : defaultColor,
-                    dotHeight: 10,
-                    dotWidth: 10,
-                    expansionFactor: 3,
-                    spacing: 5,
-                  ),
-                ),
-
-                Expanded(
-                  child: PageView.builder(
-                    scrollDirection: Axis.horizontal,
-                    controller: pageController,
-                    itemCount: 3,
-                    itemBuilder: (context,index)=> itemBuilder(),
-                  ),
-                ),
-              ],
-            ),
+            onWillPop: ()async
+            {
+              cubit.changeCurrentItemList(0);
+              return true;
+            },
           );
         },
     );
   }
 
-  Widget itemBuilder()
+  Widget restaurantMealsItemBuilder(BuildContext context, AppCubit cubit, int itemsNumber)
   {
     return Padding(
       padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:const
-        [
-          SizedBox(height: 20,),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:
+          [
 
-          Text(
-            'Main Meals',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w200,
-            ),
-          ),
-        ],
+            ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemBuilder: (context,index)=>mealItemBuilder(context,cubit),
+                separatorBuilder: (context,index)=> myDivider(),
+                itemCount: itemsNumber
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:yummy/layout/cubit/cubit.dart';
+import 'package:yummy/shared/styles/colors.dart';
 
 import '../../modules/Meal_Details/meal_details.dart';
 import '../../modules/Restaurants/restaurant_page.dart';
@@ -137,7 +139,7 @@ Widget myDivider({Color? c=Colors.grey, double padding=0}) => Container(height: 
 //------------------------------------------------------------------------\\
 
 //Meal Item Builder
-Widget mealItemBuilder(BuildContext context)
+Widget mealItemBuilder(BuildContext context, AppCubit cubit)
 {
   return GestureDetector(
     onTap: ()
@@ -204,15 +206,16 @@ Widget mealItemBuilder(BuildContext context)
 
                   const Spacer(),
 
-                  const Padding(
+                   Padding(
                     padding: const EdgeInsetsDirectional.only(end: 8.0),
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
-                        'Meal Type',
+                        '6500 SYP',
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontSize: 14
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: cubit.isDarkTheme? goldenColor: steelTealColor
                         ),
                       ),
                     ),

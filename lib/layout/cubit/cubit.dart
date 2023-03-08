@@ -49,4 +49,34 @@ class AppCubit extends Cubit<AppStates>
 
   }
 
+
+  List<String> itemsList=[
+    'Main Meals',
+    'Chicken Meals',
+    'Steaks',
+    'Desserts',
+    'Appetizers',
+    'Beverages',
+  ];
+
+  int currentItemListIndex=0;
+
+  void changeCurrentItemList(int index)
+  {
+    currentItemListIndex=index;
+    emit(AppChangeItemListState());
+  }
+
+  bool isCurrentItemList(int index)
+  {
+    if (currentItemListIndex==index)
+    {
+      // emit(AppCheckItemListState());
+      return true;
+
+    }
+    // emit(AppCheckItemListState());
+    return false;
+  }
+
 }
