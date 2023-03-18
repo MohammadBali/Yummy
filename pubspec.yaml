@@ -48,6 +48,7 @@ dependencies:
   page_transition: ^2.0.9
   cached_network_image: ^3.2.1
   scrollable_positioned_list: ^0.2.0-nullsafety.0
+  simple_gradient_text: ^1.2.4
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +82,16 @@ flutter:
       fonts:
         - asset: assets/fonts/jannah-regular.ttf
         - asset: assets/fonts/jannah-bold.ttf
+
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Bold.ttf
+        - asset: assets/fonts/Nunito-BoldItalic.ttf
+        - asset: assets/fonts/Nunito-Italic.ttf
+        - asset: assets/fonts/Nunito-LightItalic.ttf
+        - asset: assets/fonts/Nunito-Light.ttf
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-Medium.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

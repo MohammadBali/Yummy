@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/shared/components/imports.dart';
 
 class HomeLayout extends StatelessWidget {
   const HomeLayout({Key? key}) : super(key: key);
@@ -16,7 +17,12 @@ class HomeLayout extends StatelessWidget {
         var cubit= AppCubit.get(context);
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Yummy'),
+            title: const Text(
+              'Yummy',
+              style: const TextStyle(
+                letterSpacing: 1,
+              ),
+            ),
             actions:
             [
               IconButton(

@@ -39,7 +39,7 @@ ThemeData lightTheme(context) => ThemeData(
     ),
 
     textTheme: Theme.of(context).textTheme.apply(
-      fontFamily: 'Jannah',
+      fontFamily: 'Nunito',
       bodyColor: Colors.black,
       displayColor: Colors.black,)
 
@@ -129,7 +129,7 @@ ThemeData darkTheme(context)=> ThemeData(
     ),
     textTheme: Theme.of(context).textTheme.apply(
       bodyColor: Colors.white,
-      fontFamily: 'Jannah',
+      fontFamily: 'Nunito',
       displayColor: Colors.white,
 
     ), colorScheme: ColorScheme.fromSwatch(primarySwatch: defaultDarkColor).copyWith(background: defaultHomeDarkColor)

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
 import 'package:yummy/shared/components/components.dart';
-
 import '../../shared/styles/styles.dart';
 
 class HomePage extends StatelessWidget {
@@ -51,11 +52,24 @@ class HomePage extends StatelessWidget {
 
                 const SizedBox(height: 50,),
 
-                Text(
+                GradientText(
                   'Trendy Meals',
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: defaultHeadlineTextStyle,
+                  colors:
+                  [
+                    HexColor('590D22'),
+
+                    HexColor('800F2F'),
+
+                    HexColor('C9184A'),
+
+                    HexColor('FF4D6D'),
+
+                    HexColor('FF8FA3'),
+
+                  ],
                 ),
 
                 const SizedBox(height: 10,),

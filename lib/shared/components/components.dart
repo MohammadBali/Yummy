@@ -215,6 +215,7 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit)
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 16,
+                          fontWeight: FontWeight.w500,
                           color: cubit.isDarkTheme? goldenColor: steelTealColor
                         ),
                       ),
