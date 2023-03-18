@@ -75,7 +75,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 children:
                 [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: Container(
                       width: double.infinity,
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -89,18 +89,35 @@ class _RestaurantPageState extends State<RestaurantPage> {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Center(
-                            child: Text(
-                              'Roadhouse Diner',
-                              style: defaultRestaurantNameTextStyle,
-                            )
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            Center(
+                                child: Text(
+                                  'Roadhouse Diner',
+                                  style: defaultRestaurantNameTextStyle,
+                                )
+                            ),
+
+                            const SizedBox(height: 5,),
+
+                            const Align(
+                              alignment: AlignmentDirectional.bottomEnd,
+                              child: Text(
+                                'Delivery Cost: 2000 SYP',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 25,),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -135,20 +152,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       ),
                     ),
                   ),
-
-                  // SmoothPageIndicator(
-                  //   controller: pageController,
-                  //   count: 3,
-                  //   effect:  ExpandingDotsEffect
-                  //     (
-                  //     dotColor: Colors.grey,
-                  //     activeDotColor: AppCubit.get(context).isDarkTheme ? defaultDarkColor : defaultColor,
-                  //     dotHeight: 10,
-                  //     dotWidth: 10,
-                  //     expansionFactor: 3,
-                  //     spacing: 5,
-                  //   ),
-                  // ),
 
                   Expanded(
                     child: PageView.builder(

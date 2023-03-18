@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/modules/Restaurants/restaurant_page.dart';
+import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/styles/styles.dart';
 
 import '../../shared/styles/colors.dart';
@@ -31,26 +33,37 @@ class MealDetails extends StatelessWidget {
             ],
           ),
 
-          body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children:
-                  [
-                    mealItemBuilder(),
-                  ],
-                ),
-              )
+          body: Container(
+            // decoration: BoxDecoration(
+            //   image: DecorationImage(
+            //     image: AssetImage('assets/images/sketch.jpg',),
+            //     repeat: ImageRepeat.repeatY,
+            //     opacity: 0.1,
+            //     fit: BoxFit.contain
+            //   )
+            // ),
+            child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children:
+                    [
+                      mealItemBuilder(context),
+                    ],
+                  ),
+                )
+            ),
           ),
+
         );
       },
     );
   }
 
 
-  Widget mealItemBuilder()
+  Widget mealItemBuilder(BuildContext context)
   {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,22 +77,30 @@ class MealDetails extends StatelessWidget {
 
         const SizedBox(height: 10,),
 
-        Row(
-          children: [
-            const Spacer(),
+        GestureDetector(
 
-            const CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage('assets/images/american_diner.jpg')
-            ),
+          onTap: ()
+          {
+            navigateTo(context, const RestaurantPage());
+          },
 
-            const SizedBox(width: 15,),
+          child: Row(
+            children: [
+              const Spacer(),
 
-            Text(
-              'Roadhouse Diner',
-              style: defaultRestaurantNameInMealTextStyle,
-            ),
-          ],
+              const CircleAvatar(
+                  radius: 20,
+                  backgroundImage: AssetImage('assets/images/american_diner.jpg')
+              ),
+
+              const SizedBox(width: 15,),
+
+              Text(
+                'Roadhouse Diner',
+                style: defaultRestaurantNameInMealTextStyle,
+              ),
+            ],
+          ),
         ),
 
         const SizedBox(height: 20,),
@@ -90,14 +111,18 @@ class MealDetails extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 300,
-              child: Image(
-                image: const AssetImage('assets/images/lasagna.jpg'),
-                fit: BoxFit.cover,
-                errorBuilder: (context,object,trace)
-                {
-                  print('Error While Getting Image, ${object.toString()}');
-                  return const Image(image: AssetImage('assets/images/lasagna.jpg'),);
-                },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(3),
+                child: Image(
+                  image: const AssetImage('assets/images/lasagna.jpg'),
+                  fit: BoxFit.cover,
+                  isAntiAlias: true,
+                  errorBuilder: (context,object,trace)
+                  {
+                    print('Error While Getting Image, ${object.toString()}');
+                    return const Image(image: AssetImage('assets/images/lasagna.jpg'),);
+                  },
+                ),
               ),
             ),
 
@@ -115,20 +140,22 @@ class MealDetails extends StatelessWidget {
         const SizedBox(height: 20,),
 
         Text(
-          'This Meal is the famous lasagna meal that contains meat and tomato sauce and other great stuff',
+          'Cheese Filling, Meat, Tomato Sauce, Spinach, etc...',
           style: defaultDescriptionTextStyle,
-          maxLines: 2,
+          maxLines: 4,
           overflow: TextOverflow.ellipsis,
         ),
 
-        const SizedBox(height: 20,),
+        const SizedBox(height: 30,),
 
-        Text(
-          '6,500 SYP',
-          style: defaultPriceTextStyle,
+        Center(
+          child: Text(
+            '6,500 SYP',
+            style: defaultPriceTextStyle,
+          ),
         ),
 
-        const SizedBox(height: 20,),
+        const SizedBox(height: 30,),
 
         InkWell(
           highlightColor: Colors.deepOrange.withOpacity(0.2),
