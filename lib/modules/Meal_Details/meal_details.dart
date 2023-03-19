@@ -22,15 +22,7 @@ class MealDetails extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             actions:
-            [
-              // IconButton(
-              //   onPressed: ()
-              //   {
-              //     cubit.changeTheme();
-              //   },
-              //   icon: const Icon(Icons.sunny),
-              // ),
-            ],
+            [],
           ),
 
           body: Container(

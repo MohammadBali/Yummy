@@ -314,15 +314,42 @@ Widget restaurantItemBuilder(BuildContext context)
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const
+            children:
             [
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Restaurant Name',
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 16,
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:const
+                    [
+                      CircleAvatar(
+                        backgroundColor: Colors.greenAccent,
+                        radius: 5,
+                      ),
+
+                      const SizedBox(width: 5,),
+
+                      const Text(
+                        'Burger King',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    '10.00 AM - 12.00 PM',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
@@ -336,3 +363,25 @@ Widget restaurantItemBuilder(BuildContext context)
     ),
   );
 }
+
+
+//----------------------------------------------------------------------------\\
+
+//Convert a Color to MaterialColor
+
+MaterialColor getMaterialColor(Color color) {
+  final Map<int, Color> shades = {
+    50:  const Color.fromRGBO(136, 14, 79, .1),
+    100: const Color.fromRGBO(136, 14, 79, .2),
+    200: const Color.fromRGBO(136, 14, 79, .3),
+    300: const Color.fromRGBO(136, 14, 79, .4),
+    400: const Color.fromRGBO(136, 14, 79, .5),
+    500: const Color.fromRGBO(136, 14, 79, .6),
+    600: const Color.fromRGBO(136, 14, 79, .7),
+    700: const Color.fromRGBO(136, 14, 79, .8),
+    800: const Color.fromRGBO(136, 14, 79, .9),
+    900: const Color.fromRGBO(136, 14, 79, 1),
+  };
+  return MaterialColor(color.value, shades);
+}
+

@@ -44,9 +44,10 @@ TextStyle defaultPriceTextStyle= const TextStyle(
 TextStyle defaultRestaurantNameTextStyle= TextStyle(
 
   fontSize: 25,
-  fontWeight: FontWeight.w600,  //was bold
+  fontWeight: FontWeight.w700,  //was bold
   letterSpacing: 1,
   color: Colors.redAccent.withOpacity(0.8),
+  fontFamily: 'MagistralHonesty',
   shadows: [
     Shadow(color: Colors.black.withOpacity(0.5), blurRadius: 0.2),
   ],
