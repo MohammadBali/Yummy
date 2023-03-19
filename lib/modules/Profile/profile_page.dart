@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:yummy/modules/Previous%20Orders/previous_orders.dart';
+import 'package:yummy/modules/Settings/Settings.dart';
+import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/styles/styles.dart';
 
 import '../../layout/cubit/cubit.dart';
@@ -31,7 +35,7 @@ class ProfilePage extends StatelessWidget {
                     backgroundColor: Colors.blue,
                     radius: 55,
                     backgroundImage: AssetImage(
-                        'assets/images/fries.jpg'),
+                        'assets/images/pizza.jpg'),
                   ),
                 ),
 
@@ -46,15 +50,15 @@ class ProfilePage extends StatelessWidget {
 
                 const SizedBox(height: 50,),
 
-                settingsItemBuilder(itemName: 'Settings', icon: Icons.settings_rounded, mainColor: Colors.grey.withOpacity(0.5)),
+                settingsItemBuilder(itemName: 'Settings', icon: Icons.settings_rounded, mainColor: Colors.grey.withOpacity(0.5), lista: [HexColor('ADA996'), HexColor('F2F2F2'), HexColor('DBDBDB') ,HexColor('EAEAEA') ] ,func: (){navigateTo(context, const Settings());}),
 
                 const SizedBox(height: 35,),
 
-                settingsItemBuilder(itemName: 'Old Orders', icon: Icons.shopping_basket_rounded, mainColor: Colors.indigoAccent.withOpacity(0.5)),
+                settingsItemBuilder(itemName: 'Previous Orders', icon: Icons.shopping_basket_rounded, lista:[HexColor('3A1C71'), HexColor('D76D77'), HexColor('FFAF7B')],mainColor: Colors.indigoAccent.withOpacity(0.5),func: (){navigateTo(context, const PreviousOrders());}),
 
                 const SizedBox(height: 35,),
 
-                settingsItemBuilder(itemName: 'Favourite Items', icon: Icons.favorite_rounded, mainColor: Colors.redAccent.withOpacity(0.5)),
+                settingsItemBuilder(itemName: 'Favourite Items', icon: Icons.favorite_rounded, lista:[HexColor('EF3B36'), HexColor('FFFFFF')], mainColor: Colors.redAccent.withOpacity(0.5),func: (){}),
               ],
             ),
           ),
@@ -66,14 +70,15 @@ class ProfilePage extends StatelessWidget {
   Widget settingsItemBuilder({
   required String itemName,
   required IconData icon,
-  Color mainColor=Colors.grey,})
+  required void Function()? func,
+  Color mainColor=Colors.grey,
+  required List<Color> lista,
+  })
   {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       highlightColor: Colors.grey.withOpacity(0.5),
-      onTap: ()
-      {
-      },
+      onTap: func,
       child: Container(
         width: double.infinity,
         height: 75,
@@ -81,6 +86,12 @@ class ProfilePage extends StatelessWidget {
         decoration: BoxDecoration(
           color: mainColor,
           borderRadius: BorderRadius.circular(10),
+
+          gradient: LinearGradient(
+            colors: lista,
+            end: Alignment.topRight,
+            begin: Alignment.bottomLeft
+          ),
         ),
         child: Padding(
           padding: const EdgeInsetsDirectional.symmetric(horizontal:  15.0),

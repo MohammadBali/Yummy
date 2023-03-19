@@ -66,6 +66,50 @@ Widget defaultFormField({
 
 
 
+Widget defaultButton(
+{
+  String title='Submit',
+  AlignmentGeometry childAlignment=Alignment.center,
+  double borderRadius=6,
+  AlignmentGeometry gradientEndArea= Alignment.topRight,
+  AlignmentGeometry gradientStartArea= Alignment.topLeft,
+  required void Function()? onTap,
+})
+{
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      alignment: childAlignment,
+      width: 185,
+      height: 45,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(borderRadius),
+        gradient: LinearGradient(
+          colors:
+          [
+            Colors.blue.withOpacity(0.8),
+            Colors.redAccent.withOpacity(0.8),
+          ],
+          end: gradientEndArea,
+          begin: gradientStartArea,
+        ),
+      ),
+      child: Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
+}
+
+
+//-------------------------------------------------------------------------------------------------------\\
+
+
 //DefaultToast message
 Future<bool?> defaultToast({
   required String msg,

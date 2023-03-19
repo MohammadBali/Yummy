@@ -61,13 +61,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
               appBar: AppBar(
                 actions:
                 [
-                  IconButton(
-                      onPressed: ()
-                      {
-                        cubit.changeTheme();
-                      },
-                      icon: const Icon(Icons.sunny)
-                  ),
+                  // IconButton(
+                  //     onPressed: ()
+                  //     {
+                  //       cubit.changeTheme();
+                  //     },
+                  //     icon: const Icon(Icons.sunny)
+                  // ),
                 ],
               ),
 
@@ -75,7 +75,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 children:
                 [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
                     child: Container(
                       width: double.infinity,
                       clipBehavior: Clip.antiAliasWithSaveLayer,

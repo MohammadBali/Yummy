@@ -23,13 +23,13 @@ class MealDetails extends StatelessWidget {
           appBar: AppBar(
             actions:
             [
-              IconButton(
-                onPressed: ()
-                {
-                  cubit.changeTheme();
-                },
-                icon: const Icon(Icons.sunny),
-              ),
+              // IconButton(
+              //   onPressed: ()
+              //   {
+              //     cubit.changeTheme();
+              //   },
+              //   icon: const Icon(Icons.sunny),
+              // ),
             ],
           ),
 

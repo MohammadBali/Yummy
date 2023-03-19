@@ -78,10 +78,9 @@ flutter:
 
 
   fonts:
-    - family: Jannah
+    - family: MagistralHonesty
       fonts:
-        - asset: assets/fonts/jannah-regular.ttf
-        - asset: assets/fonts/jannah-bold.ttf
+        - asset: assets/fonts/MagistralHonesty.otf
 
     - family: Nunito
       fonts:

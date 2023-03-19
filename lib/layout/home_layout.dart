@@ -19,20 +19,15 @@ class HomeLayout extends StatelessWidget {
           appBar: AppBar(
             title: const Text(
               'Yummy',
-              style: const TextStyle(
+              style: TextStyle(
                 letterSpacing: 1,
+                fontFamily: 'MagistralHonesty',
+                fontWeight: FontWeight.bold,
+                fontSize: 26,
               ),
             ),
             actions:
-            [
-              IconButton(
-                  onPressed: ()
-                  {
-                    cubit.changeTheme();
-                  },
-                  icon: const Icon(Icons.sunny),
-              ),
-            ],
+            [],
           ),
 
           body: cubit.bottomBarWidgets[cubit.currentBottomBarIndex],
