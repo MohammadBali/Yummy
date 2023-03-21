@@ -49,6 +49,9 @@ dependencies:
   cached_network_image: ^3.2.1
   scrollable_positioned_list: ^0.2.0-nullsafety.0
   simple_gradient_text: ^1.2.4
+  geolocator: ^9.0.2
+  geocoding: ^2.1.0
+  flutter_geocoder: ^0.2.2-nullsafety
 
 dev_dependencies:
   flutter_test:

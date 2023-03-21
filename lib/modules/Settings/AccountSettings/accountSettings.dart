@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/components/imports.dart';
+import 'package:flutter_geocoder/geocoder.dart';
 
 class AccountSettings extends StatefulWidget {
   const AccountSettings({Key? key}) : super(key: key);
@@ -11,11 +12,31 @@ class AccountSettings extends StatefulWidget {
 
 class _AccountSettingsState extends State<AccountSettings> {
 
+  String? _currentAddress;
+  Position? _currentPosition;
+
+  bool isLoading=false; //Check for getting location
+
   TextEditingController firstNameController= TextEditingController();
   TextEditingController lastNameController= TextEditingController();
 
   TextEditingController locationController= TextEditingController();
   var formKey=GlobalKey<FormState>();
+
+  @override
+  void initState()
+  {
+    super.initState();
+  }
+
+  @override
+  void dispose()
+  {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    locationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +56,13 @@ class _AccountSettingsState extends State<AccountSettings> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:
                       [
+                        Visibility(
+                          visible: isLoading,
+                          child: defaultLinearProgressIndicator(context),
+                        ),
+
+                        const SizedBox(height: 20,),
+
                         Text(
                           'Personal Information',
                           style: defaultHeadlineTextStyle,
@@ -101,7 +129,10 @@ class _AccountSettingsState extends State<AccountSettings> {
                             return "Location Can't be empty";
                           },
 
-                          onTap: (){},
+                          onTap: ()
+                          {
+                            getCurrentPosition(context);
+                          },
                         ),
 
                         const SizedBox(height: 50,),
@@ -128,5 +159,45 @@ class _AccountSettingsState extends State<AccountSettings> {
           );
         },
     );
+  }
+
+  Future<void> getCurrentPosition(BuildContext context) async
+  {
+    setState(() {
+      isLoading=true;
+    });
+    final hasPermission = await handleLocationPermission(context); //Check for Permission
+    if (!hasPermission) return;
+    defaultToast(msg: 'Getting Coordinates, Please wait');
+    await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high).then((Position position)
+    {
+      print('Your Position is, $position}');
+      defaultToast(msg: 'Your Position is, $position}');
+      setState(() {
+        locationController.text=position.toString();
+        _currentPosition=position;
+        // getAddressFromLatLng(position);
+        getAddressFromCoordinates(position);
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<void> getAddressFromCoordinates(Position position) async
+  {
+    defaultToast(msg: 'Getting Address from Coordinates');
+
+    final coordinates = Coordinates(position.latitude, position.longitude);
+    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var first = addresses.first;
+    print("${first.featureName} : ${first.addressLine}");
+
+    setState(() {
+      locationController.text='${first.featureName}, ${first.addressLine}';
+
+      isLoading=false;
+    });
   }
 }

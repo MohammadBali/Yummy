@@ -45,9 +45,9 @@ class Settings extends StatelessWidget {
 
                           const SizedBox(width: 10,),
 
-                          Text(
+                          const Text(
                             'Dark Mode',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500
                             ),

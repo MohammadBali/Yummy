@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/shared/styles/colors.dart';
 
@@ -385,3 +386,58 @@ MaterialColor getMaterialColor(Color color) {
   return MaterialColor(color.value, shades);
 }
 
+
+
+
+//----------------------------------------------------------------------------\\
+
+//Check the user permission for Geo-Locator
+
+Future<bool> handleLocationPermission(BuildContext context) async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Location services are disabled. Please enable the services')));
+    return false;
+  }
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are denied')));
+      return false;
+    }
+  }
+  if (permission == LocationPermission.deniedForever) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+    return false;
+  }
+  return true;
+}
+
+
+//---------------------------------------------------------------------------------\\
+
+
+Widget defaultLinearProgressIndicator(BuildContext context)
+{
+  return LinearProgressIndicator(
+    backgroundColor: AppCubit.get(context).isDarkTheme? Colors.grey : null,
+  );
+}
+
+
+Widget defaultProgressIndicator(BuildContext context)
+{
+  return CircularProgressIndicator(
+    backgroundColor: AppCubit.get(context).isDarkTheme? Colors.grey : null,
+  );
+}
+
+
+//---------------------------------------------------------------------------------------\\
