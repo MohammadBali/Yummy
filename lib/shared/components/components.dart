@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_geocoder/geocoder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
@@ -419,6 +420,18 @@ Future<bool> handleLocationPermission(BuildContext context) async {
   }
   return true;
 }
+
+
+//---------------------------------------------------------------------------------\\
+
+
+//Get Coordinates from and Address
+
+Future<void> getCoordinatesFromAddress(String add) async
+{
+  var Coordinates = await Geocoder.local.findAddressesFromQuery(add);
+}
+
 
 
 //---------------------------------------------------------------------------------\\

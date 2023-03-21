@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/components/imports.dart';
+
+import '../modules/Map/mapPage.dart';
 
 class HomeLayout extends StatelessWidget {
   const HomeLayout({Key? key}) : super(key: key);
@@ -29,7 +32,15 @@ class HomeLayout extends StatelessWidget {
               ),
             ),
             actions:
-            [],
+            [
+              IconButton(
+                onPressed: ()
+                {
+                  navigateTo(context, const MapPage() );
+                },
+                icon: Icon(Icons.map_rounded, color: defaultColor,)
+              ),
+            ],
           ),
 
           body: cubit.bottomBarWidgets[cubit.currentBottomBarIndex],

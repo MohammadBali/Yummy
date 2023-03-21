@@ -211,7 +211,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   Future<void> getAddressFromCoordinates(Position position) async
   {
     defaultToast(msg: 'Getting Address from Coordinates');
-
+    
     final coordinates = Coordinates(position.latitude, position.longitude);
     var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
     var first = addresses.first;
