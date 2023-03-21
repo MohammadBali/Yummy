@@ -20,7 +20,9 @@ class _AccountSettingsState extends State<AccountSettings> {
   TextEditingController firstNameController= TextEditingController();
   TextEditingController lastNameController= TextEditingController();
 
+  TextEditingController autoLocationController= TextEditingController();
   TextEditingController locationController= TextEditingController();
+
   var formKey=GlobalKey<FormState>();
 
   @override
@@ -34,7 +36,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   {
     firstNameController.dispose();
     lastNameController.dispose();
-    locationController.dispose();
+    autoLocationController.dispose();
     super.dispose();
   }
 
@@ -113,13 +115,13 @@ class _AccountSettingsState extends State<AccountSettings> {
 
                         const SizedBox(height: 30,),
 
+
                         defaultFormField(
                           controller: locationController,
-                          keyboard: TextInputType.none,
-                          label: 'Location',
-                          prefix: Icons.maps_home_work_rounded,
+                          keyboard: TextInputType.text,
+                          label: 'Written Location',
+                          prefix: Icons.home_rounded,
                           borderRadius: 10,
-                          readOnly: true,
                           validate: (value)
                           {
                             if(value!.isNotEmpty)
@@ -128,12 +130,33 @@ class _AccountSettingsState extends State<AccountSettings> {
                             }
                             return "Location Can't be empty";
                           },
+                        ),
+
+                        const SizedBox(height: 30,),
+
+                        defaultFormField(
+                          controller: autoLocationController,
+                          keyboard: TextInputType.none,
+                          label: 'Auto Location',
+                          prefix: Icons.map_rounded,
+                          borderRadius: 10,
+                          readOnly: true,
+                          validate: (value)
+                          {
+                            if(value!.isNotEmpty)
+                            {
+                              return null;
+                            }
+                            return "Auto Location Can't be empty";
+                          },
 
                           onTap: ()
                           {
                             getCurrentPosition(context);
                           },
                         ),
+
+
 
                         const SizedBox(height: 50,),
 
@@ -175,7 +198,7 @@ class _AccountSettingsState extends State<AccountSettings> {
       print('Your Position is, $position}');
       defaultToast(msg: 'Your Position is, $position}');
       setState(() {
-        locationController.text=position.toString();
+        autoLocationController.text=position.toString();
         _currentPosition=position;
         // getAddressFromLatLng(position);
         getAddressFromCoordinates(position);
@@ -195,7 +218,7 @@ class _AccountSettingsState extends State<AccountSettings> {
     print("${first.featureName} : ${first.addressLine}");
 
     setState(() {
-      locationController.text='${first.featureName}, ${first.addressLine}';
+      autoLocationController.text='${first.featureName}, ${first.addressLine}';
 
       isLoading=false;
     });

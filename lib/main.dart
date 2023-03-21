@@ -5,6 +5,7 @@ import 'package:yummy/layout/home_layout.dart';
 import 'package:yummy/shared/bloc_observer.dart';
 import 'package:yummy/shared/components/constants.dart';
 import 'package:yummy/shared/network/local/cache_helper.dart';
+import 'package:yummy/shared/network/remote/main_dio_helper.dart';
 import 'package:yummy/shared/styles/themes.dart';
 
 import 'layout/cubit/states.dart';
@@ -13,6 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //Makes sure that all the await and initializer get done before runApp
 
   Bloc.observer = MyBlocObserver(); //Running Bloc Observer which prints change in states and errors etc...  in console
+
+  DioHelper.init();
 
   await CacheHelper.init(); //Starting CacheHelper, await for it since there is async,await in .init().
 
