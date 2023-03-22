@@ -124,9 +124,15 @@ class Login extends StatelessWidget {
                             {
                               navigateTo(context, const Register());
                             },
+
                             child: const Text(
                               'REGISTER NOW!'
                             ),
+
+                            onLongPress: ()
+                            {
+                              navigateAndFinish(context, const HomeLayout());
+                            },
                           ),
                         ],
                       ),
