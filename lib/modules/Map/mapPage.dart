@@ -14,17 +14,14 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  TextEditingController searchController=TextEditingController();
 
-  bool isLoaded=false;
-  late double longitude;
-  late double latitude;
-
-  MapController mapController=MapController();
+  var formKey=GlobalKey<FormState>();
 
   @override
   void initState()
   {
-    getCurrentPosition(context);
+    getCurrentPosition(context, AppCubit.get(context) );
     super.initState();
   }
 
@@ -33,32 +30,92 @@ class _MapPageState extends State<MapPage> {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        var cubit=AppCubit.get(context);
         return Scaffold(
-          appBar: AppBar(),
+          // appBar: AppBar(),
 
-          body: ConditionalBuilder(
-            condition: isLoaded,
-            builder: (context)=> FlutterMap(
-              options: MapOptions(
-                center: LatLng(latitude,longitude), //LatLng(51.509364, -0.128928),
-                zoom: 15.2,
-              ),
-              mapController: mapController,
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
+          body: SafeArea(
+            child: ConditionalBuilder(
+              condition: cubit.isMapLoaded,
+              builder: (context)=> Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 5,),
+
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 14.0, end: 14, bottom: 14),
+                      child: defaultFormField(
+                          controller: searchController,
+                          keyboard: TextInputType.text,
+                          borderRadius: 10,
+                          label: 'Search',
+                          prefix: Icons.search_rounded,
+                          validate: (value)
+                          {
+                            if(value!.isNotEmpty)
+                              {
+                                return null;
+                              }
+                            return "Enter a value to search";
+                          },
+
+                          onSubmit: (val)
+                          {
+                            if(formKey.currentState!.validate())
+                              {
+
+                                cubit.getCoordinatesFromAddress(val);
+                              }
+                          }
+                      ),
+                    ),
+
+                    Visibility(
+                      visible: state is AppChangeMapCoordinatesFromAddressLoadingState,
+                      child: Column(
+                        children:
+                        [
+                          const SizedBox(height: 10,),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: defaultLinearProgressIndicator(context),
+                          ),
+
+                          const SizedBox(height: 10,),
+                        ],
+                      ),
+                    ),
+
+                    Expanded(
+                      child: FlutterMap(
+                        options: MapOptions(
+                          center: LatLng(cubit.mapLatitude,cubit.mapLongitude), //LatLng(51.509364, -0.128928),
+                          zoom: 15.2,
+
+                        ),
+                        mapController: cubit.mapController,
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.example.app',
+                          ),
+                        ],
+
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-
+              ),
+              fallback: (context)=> Center(child: defaultProgressIndicator(context)),
             ),
-            fallback: (context)=> Center(child: defaultProgressIndicator(context)),
           ),
 
           floatingActionButton: FloatingActionButton(
             onPressed: ()
             {
-              getCurrentPosition(context, isFAB: true);
+              getCurrentPosition(context, cubit, isFAB: true);
             },
 
             elevation: 20,
@@ -71,8 +128,9 @@ class _MapPageState extends State<MapPage> {
   }
 
 
-  Future<void> getCurrentPosition(BuildContext context, {bool isFAB=false}) async
+  Future<void> getCurrentPosition(BuildContext context,AppCubit cubit, {bool isFAB=false}) async
   {
+
     final hasPermission = await handleLocationPermission(context); //Check for Permission
     if (!hasPermission) return;
     defaultToast(msg: 'Getting Coordinates, Please wait');
@@ -80,16 +138,13 @@ class _MapPageState extends State<MapPage> {
         desiredAccuracy: LocationAccuracy.high).then((Position position)
     {
       print('Your Position is, $position}');
-      // defaultToast(msg: 'Your Position is, $position}');
+
+      cubit.changeMapCoordinates(position.longitude, position.latitude, false);
+
       setState(() {
-
-        longitude= position.longitude;
-        latitude=position.latitude;
-        isLoaded=true;
-
         if(isFAB==true)
           {
-            mapController.move(LatLng(position.latitude,position.longitude), 15.2);
+            cubit.changeMapCoordinates(position.longitude,position.latitude, true);
           }
       });
     }).catchError((e) {

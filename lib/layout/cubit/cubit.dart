@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_geocoder/geocoder.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:yummy/layout/cubit/states.dart';
 import 'package:yummy/modules/Profile/profile_page.dart';
 
 import '../../modules/Home/home_page.dart';
 import '../../modules/Restaurants/restaurants_page.dart';
 import '../../shared/network/local/cache_helper.dart';
+import 'package:latlong2/latlong.dart';
 
 class AppCubit extends Cubit<AppStates>
 {
@@ -78,6 +81,63 @@ class AppCubit extends Cubit<AppStates>
     // emit(AppCheckItemListState());
     return false;
   }
+
+
+  //MAP LONGITUDE AND LATITUDE for mapPage
+
+  MapController mapController=MapController();
+
+  double mapLongitude=0.0;
+  double mapLatitude=0.0;
+  bool isMapLoaded=false;
+
+  // Change current location to a desired Coordinates, if isLoaded is passed as true, then we will update the Controller Area and change the state that the map is loaded.
+  void changeMapCoordinates(double long, double lat, bool isLoaded, {double zoom=15.2})
+  {
+    mapLatitude=lat;
+    mapLongitude=long;
+    if(isLoaded==true)
+      {
+        mapController.move(LatLng(lat,long), zoom);
+      }
+
+    if(isMapLoaded==false)
+      {
+        print('change isMapLoaded to true');
+        changeIsMapLoaded(true);
+      }
+    emit(AppChangeMapCoordinatesSuccessState());
+  }
+
+  void changeIsMapLoaded(bool isLoaded)
+  {
+    isMapLoaded=isLoaded;
+    emit(AppChangeIsMapLoadedState());
+  }
+
+  //Get Coordinates from and Address
+  Future<void> getCoordinatesFromAddress(String add) async
+  {
+    emit(AppChangeMapCoordinatesFromAddressLoadingState());
+    print('Getting Address Details from Query...');
+
+    try
+    {
+      List<Address> address = await Geocoder.local.findAddressesFromQuery(add);
+      print('The Address Details Are, Longitude: ${address[0].coordinates.longitude}, Latitude:${address[0].coordinates.latitude}, Address Line: ${address[0].addressLine}');
+
+      changeMapCoordinates(address[0].coordinates.longitude!, address[0].coordinates.latitude!, true);
+    }
+
+    catch(error)
+    {
+      print('ERROR WHILE GETTING COORDINATES FROM ADDRESS, ${error.toString()}');
+      emit(AppChangeMapCoordinatesFromAddressErrorState());
+    }
+  }
+
+
+
 
 
 

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import '../end_points.dart';
 
 // Dio is an HTTP client, we declare in the init() giving the url to get the data from, and it getData we give him the method and queries.
-class DioHelper
+class MainDioHelper
 {
   static Dio ? dio;
 
@@ -10,7 +10,7 @@ class DioHelper
   {
     dio=Dio(
       BaseOptions(
-        baseUrl: '$localhost/api/',   // JuniorProject default url.
+        baseUrl: '$localhost/api/',   // default URL '$localhost/api/'
         receiveDataWhenStatusError: true,
         // receiveTimeout: Duration.zero, //50000,
         // connectTimeout: Duration.zero, //30000,

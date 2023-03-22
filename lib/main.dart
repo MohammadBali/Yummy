@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/home_layout.dart';
+import 'package:yummy/modules/Login/login.dart';
 import 'package:yummy/shared/bloc_observer.dart';
 import 'package:yummy/shared/components/constants.dart';
 import 'package:yummy/shared/network/local/cache_helper.dart';
@@ -15,7 +16,7 @@ void main() async {
 
   Bloc.observer = MyBlocObserver(); //Running Bloc Observer which prints change in states and errors etc...  in console
 
-  // DioHelper.init();
+  MainDioHelper.init();
 
   await CacheHelper.init(); //Starting CacheHelper, await for it since there is async,await in .init().
 
@@ -34,7 +35,7 @@ void main() async {
   }
   else  //OnBoarding has been shown before but the token is empty => Login is required.
   {
-    widget = const HomeLayout(); //Should be Login
+    widget =  Login(); //Should be Login
   }
 
   runApp( MyApp(isDark: isDark, homeWidget: widget,));

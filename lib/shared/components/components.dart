@@ -425,14 +425,6 @@ Future<bool> handleLocationPermission(BuildContext context) async {
 //---------------------------------------------------------------------------------\\
 
 
-//Get Coordinates from and Address
-
-Future<void> getCoordinatesFromAddress(String add) async
-{
-  var Coordinates = await Geocoder.local.findAddressesFromQuery(add);
-}
-
-
 
 //---------------------------------------------------------------------------------\\
 
@@ -454,3 +446,6 @@ Widget defaultProgressIndicator(BuildContext context)
 
 
 //---------------------------------------------------------------------------------------\\
+
+
+isNumeric(string) => num.tryParse(string) != null;
