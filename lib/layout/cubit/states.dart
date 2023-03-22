@@ -17,3 +17,11 @@ class AppChangeMapCoordinatesFromAddressErrorState extends AppStates{}
 class AppChangeMapCoordinatesSuccessState extends AppStates{}
 
 class AppChangeIsMapLoadedState extends AppStates{}
+
+class AppSetMarkerState extends AppStates{}
+
+class AppGetAddressFromCoordinatesLoadingState extends AppStates{}
+
+class AppGetAddressFromCoordinatesSuccessState extends AppStates{}
+
+class AppGetAddressFromCoordinatesErrorState extends AppStates{}

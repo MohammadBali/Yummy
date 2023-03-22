@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:yummy/layout/cubit/states.dart';
 import 'package:yummy/modules/Profile/profile_page.dart';
+import 'package:yummy/shared/components/components.dart';
 
 import '../../modules/Home/home_page.dart';
 import '../../modules/Restaurants/restaurants_page.dart';
@@ -91,6 +93,8 @@ class AppCubit extends Cubit<AppStates>
   double mapLatitude=0.0;
   bool isMapLoaded=false;
 
+  String areaName='';  //to Show Area Name
+
   // Change current location to a desired Coordinates, if isLoaded is passed as true, then we will update the Controller Area and change the state that the map is loaded.
   void changeMapCoordinates(double long, double lat, bool isLoaded, {double zoom=15.2})
   {
@@ -106,7 +110,10 @@ class AppCubit extends Cubit<AppStates>
         print('change isMapLoaded to true');
         changeIsMapLoaded(true);
       }
+
     emit(AppChangeMapCoordinatesSuccessState());
+
+    getAddressFromCoordinates(long,lat);
   }
 
   void changeIsMapLoaded(bool isLoaded)
@@ -131,9 +138,47 @@ class AppCubit extends Cubit<AppStates>
 
     catch(error)
     {
+      defaultToast(msg: "Couldn't get coordinates.");
       print('ERROR WHILE GETTING COORDINATES FROM ADDRESS, ${error.toString()}');
       emit(AppChangeMapCoordinatesFromAddressErrorState());
     }
+  }
+
+
+  Future<void> getAddressFromCoordinates(double long, double lat) async
+  {
+   print('Getting Address From Coordinates');
+
+   emit(AppGetAddressFromCoordinatesLoadingState());
+
+    final coordinates = Coordinates(lat, long);
+
+    try
+    {
+      var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
+      print("Address Details are: ${first.adminArea} : ${first.addressLine}");
+      areaName=(first.adminArea ?? 'Not Assigned');
+      emit(AppGetAddressFromCoordinatesSuccessState());
+    }
+    catch (error)
+    {
+      print('ERROR WHILE GETTING ADDRESS FROM COORDINATES, ${error.toString()}');
+      defaultToast(msg: 'Could not get Address from Coordinates');
+      emit(AppGetAddressFromCoordinatesErrorState());
+    }
+  }
+
+  //Markers .
+  double markerLongitude=0.0;
+  double markerLatitude=0.0;
+
+  void setMarker(double long, double lat)
+  {
+    markerLongitude=long;
+    markerLatitude=lat;
+
+    emit(AppSetMarkerState());
   }
 
 

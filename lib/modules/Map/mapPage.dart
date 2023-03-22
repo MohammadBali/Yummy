@@ -1,6 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:yummy/shared/components/imports.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -31,97 +32,166 @@ class _MapPageState extends State<MapPage> {
       listener: (context, state) {},
       builder: (context, state) {
         var cubit=AppCubit.get(context);
-        return Scaffold(
-          // appBar: AppBar(),
+        return WillPopScope(
 
-          body: SafeArea(
-            child: ConditionalBuilder(
-              condition: cubit.isMapLoaded,
-              builder: (context)=> Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 5,),
+          child: Scaffold(
+            // appBar: AppBar(),
 
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(start: 14.0, end: 14, bottom: 14),
-                      child: defaultFormField(
-                          controller: searchController,
-                          keyboard: TextInputType.text,
-                          borderRadius: 10,
-                          label: 'Search',
-                          prefix: Icons.search_rounded,
-                          validate: (value)
-                          {
-                            if(value!.isNotEmpty)
-                              {
-                                return null;
-                              }
-                            return "Enter a value to search";
-                          },
+            body: SafeArea(
+              child: ConditionalBuilder(
+                condition: cubit.isMapLoaded,
+                builder: (context)=> Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 5,),
 
-                          onSubmit: (val)
-                          {
-                            if(formKey.currentState!.validate())
-                              {
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 14.0, end: 14, bottom: 14),
+                        child: defaultFormField(
+                            controller: searchController,
+                            keyboard: TextInputType.text,
+                            borderRadius: 10,
+                            label: 'Search',
+                            prefix: Icons.search_rounded,
+                            validate: (value)
+                            {
+                              if(value!.isNotEmpty)
+                                {
+                                  return null;
+                                }
+                              return "Enter a value to search";
+                            },
 
-                                cubit.getCoordinatesFromAddress(val);
-                              }
-                          }
+                            onSubmit: (val)
+                            {
+                              if(formKey.currentState!.validate())
+                                {
+                                  cubit.getCoordinatesFromAddress(val);
+                                }
+                            }
+                        ),
                       ),
-                    ),
 
-                    Visibility(
-                      visible: state is AppChangeMapCoordinatesFromAddressLoadingState,
-                      child: Column(
-                        children:
-                        [
-                          const SizedBox(height: 10,),
+                      Visibility(
+                        visible: state is AppChangeMapCoordinatesFromAddressLoadingState,
+                        child: Column(
+                          children:
+                          [
+                            const SizedBox(height: 10,),
 
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: defaultLinearProgressIndicator(context),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: defaultLinearProgressIndicator(context),
+                            ),
+
+                            const SizedBox(height: 10,),
+                          ],
+                        ),
+                      ),
+
+                      Expanded(
+                        child: FlutterMap(
+                          options: MapOptions(
+                            center: LatLng(cubit.mapLatitude,cubit.mapLongitude), //LatLng(51.509364, -0.128928),
+                            zoom: 15.2,
+
+                            onLongPress: (tapPosition, LatLng position)
+                            {
+                              defaultToast(msg: 'Setting Marker...');
+                              cubit.setMarker(position.longitude, position.latitude);
+                            },
+
                           ),
+                          mapController: cubit.mapController,
 
-                          const SizedBox(height: 10,),
-                        ],
-                      ),
-                    ),
+                          nonRotatedChildren: [
+                            // AttributionWidget.defaultWidget(
+                            //
+                            //   source: cubit.areaName,
+                            //
+                            //   sourceTextStyle: const TextStyle(
+                            //     overflow: TextOverflow.ellipsis
+                            //   ),
+                            //   alignment: Alignment.bottomLeft,
+                            //   onSourceTapped: () {},
+                            //
+                            // ),
 
-                    Expanded(
-                      child: FlutterMap(
-                        options: MapOptions(
-                          center: LatLng(cubit.mapLatitude,cubit.mapLongitude), //LatLng(51.509364, -0.128928),
-                          zoom: 15.2,
+
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: ColoredBox(
+                                color: const Color(0xCCFFFFFF),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                       Text('You are at: ${cubit.areaName}'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+
+                          ],
+
+                          children: [
+                            TileLayer(
+                              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              userAgentPackageName: 'com.example.app',
+                            ),
+
+                            MarkerLayer(
+                              markers: [
+                                Marker(
+                                  point: LatLng(cubit.mapLatitude, cubit.mapLongitude),
+                                  width: 80,
+                                  height: 80,
+                                  builder: (context) =>  Icon(Icons.pin_drop_rounded, size: 35, color: defaultDarkColor,),
+                                  anchorPos: AnchorPos.exactly(Anchor(cubit.mapLatitude+2, cubit.mapLongitude)),
+                                ),
+
+                                Marker(
+                                  point: LatLng(cubit.markerLatitude, cubit.markerLongitude),
+                                  width: 80,
+                                  height: 80,
+                                  builder: (context) =>  Icon(Icons.pin_drop_rounded, size: 35, color: defaultColor,),
+                                  anchorPos: AnchorPos.exactly(Anchor(cubit.markerLatitude, cubit.markerLongitude)),
+                                ),
+
+                              ],
+                            ),
+                          ],
 
                         ),
-                        mapController: cubit.mapController,
-                        children: [
-                          TileLayer(
-                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName: 'com.example.app',
-                          ),
-                        ],
-
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                fallback: (context)=> Center(child: defaultProgressIndicator(context)),
               ),
-              fallback: (context)=> Center(child: defaultProgressIndicator(context)),
+            ),
+
+            floatingActionButton: FloatingActionButton(
+              onPressed: ()
+              {
+                getCurrentPosition(context, cubit, isFAB: true);
+              },
+
+              elevation: 20,
+              child: const Icon(Icons.gps_fixed_rounded),
+
             ),
           ),
 
-          floatingActionButton: FloatingActionButton(
-            onPressed: ()
-            {
-              getCurrentPosition(context, cubit, isFAB: true);
-            },
-
-            elevation: 20,
-            child: const Icon(Icons.gps_fixed_rounded),
-
-          ),
+          onWillPop: () async
+          {
+            cubit.setMarker(0, 0);
+            cubit.changeIsMapLoaded(false);
+            return true;
+          },
         );
       },
     );
@@ -139,14 +209,14 @@ class _MapPageState extends State<MapPage> {
     {
       print('Your Position is, $position}');
 
-      cubit.changeMapCoordinates(position.longitude, position.latitude, false);
-
-      setState(() {
-        if(isFAB==true)
-          {
-            cubit.changeMapCoordinates(position.longitude,position.latitude, true);
-          }
-      });
+      if(isFAB==true)
+        {
+          cubit.changeMapCoordinates(position.longitude,position.latitude, true);
+        }
+      else
+        {
+          cubit.changeMapCoordinates(position.longitude, position.latitude, false);
+        }
     }).catchError((e) {
       debugPrint(e);
     });
