@@ -13,7 +13,7 @@ class AccountSettings extends StatefulWidget {
 class _AccountSettingsState extends State<AccountSettings> {
 
   String? _currentAddress;
-  Position? _currentPosition;
+  // Position? _currentPosition;
 
   bool isLoading=false; //Check for getting location
 
@@ -199,7 +199,7 @@ class _AccountSettingsState extends State<AccountSettings> {
       defaultToast(msg: 'Your Position is, $position}');
       setState(() {
         autoLocationController.text=position.toString();
-        _currentPosition=position;
+        // _currentPosition=position;
         // getAddressFromLatLng(position);
         getAddressFromCoordinates(position);
       });

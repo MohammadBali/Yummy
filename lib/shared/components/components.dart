@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
@@ -30,6 +31,7 @@ Widget defaultFormField({
   TextInputAction? inputAction,
   double borderRadius=0,
   bool readOnly=false,
+  int? digitsLimits,
 }) =>
     TextFormField(
       controller: controller,
@@ -61,6 +63,10 @@ Widget defaultFormField({
           ),
         ),
       ),
+      inputFormatters:
+      [
+        LengthLimitingTextInputFormatter(digitsLimits),
+      ],
     );
 
 
@@ -163,6 +169,7 @@ Color chooseToastColor(ToastStates state) {
 void navigateTo( BuildContext context, Widget widget) =>Navigator.push(
   context,
   MaterialPageRoute(builder: (context)=>widget),
+
 );
 
 //--------------------------------------------------------------------------------------------------\\
@@ -441,6 +448,7 @@ Widget defaultProgressIndicator(BuildContext context)
 {
   return CircularProgressIndicator(
     backgroundColor: AppCubit.get(context).isDarkTheme? Colors.grey : null,
+
   );
 }
 

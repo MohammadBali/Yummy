@@ -1,10 +1,13 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/modules/Login/cubit/loginCubit.dart';
 import 'package:yummy/modules/Login/cubit/loginStates.dart';
 import 'package:yummy/modules/Register/register.dart';
 import 'package:yummy/shared/components/components.dart';
+import 'package:yummy/shared/components/constants.dart';
 import 'package:yummy/shared/components/imports.dart';
+import 'package:yummy/shared/network/local/cache_helper.dart';
 
 import '../../layout/home_layout.dart';
 
@@ -21,7 +24,32 @@ class Login extends StatelessWidget {
     return BlocProvider(
       create: (context)=>LoginCubit(),
       child: BlocConsumer<LoginCubit,LoginStates>(
-        listener: (context,state){},
+        listener: (context,state)
+        {
+          if(state is LoginErrorState)
+            {
+              defaultToast(msg: state.error, state: ToastStates.error);
+            }
+
+          if(state is LoginSuccessState)
+            {
+              if(state.loginModel.code==1)
+                {
+                  defaultToast(msg: 'Success', state: ToastStates.success);
+
+                  CacheHelper.saveData(key: 'token', value: state.loginModel.token).then((value)
+                  {
+                    token=state.loginModel.token!;
+
+                    navigateAndFinish(context, const HomeLayout());
+
+                  }).catchError((error)
+                  {
+                    print('ERROR WHILE CACHING USER TOKEN IN LOGIN, ${error.toString()}');
+                  });
+                }
+            }
+        },
 
         builder: (context,state)
         {
@@ -38,6 +66,7 @@ class Login extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children:
                     [
+
                       Center(
                         child: Text(
                           'Yummy',
@@ -105,7 +134,7 @@ class Login extends StatelessWidget {
                         {
                           if(formKey.currentState!.validate())
                           {
-                            navigateAndFinish(context, const HomeLayout());
+
                           }
                         },
                       ),
@@ -139,18 +168,27 @@ class Login extends StatelessWidget {
 
                       const SizedBox(height: 25,),
 
-                      Center(child: defaultButton(
+                      ConditionalBuilder(
+                        condition: state is! LoginLoadingState,
+                        builder: (context)=>Center(child: defaultButton(
 
-                          title: 'login',
+                            title: 'login',
 
-                          onTap: ()
-                          {
-                            if(formKey.currentState!.validate())
+                            onTap: ()
+                            {
+                              if(formKey.currentState!.validate())
                               {
-                                navigateAndFinish(context, const HomeLayout());
+                                cubit.userLogin(
+                                  phoneController.value.text,
+                                  passwordController.value.text,
+                                );
                               }
-                          }),
+                            }),
+                        ),
+                        fallback: (context)=>Center(child: defaultProgressIndicator(context),)
                       ),
+
+
                     ],
                   ),
                 ),

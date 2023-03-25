@@ -1,7 +1,8 @@
+import 'dart:math';
+
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:string_extensions/string_extensions.dart';
 import 'package:yummy/shared/components/imports.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -100,6 +101,54 @@ class _MapPageState extends State<MapPage> {
                             {
                               defaultToast(msg: 'Setting Marker...');
                               cubit.setMarker(position.longitude, position.latitude);
+
+                              // showModalBottomSheet(
+                              //   context: context,
+                              //   builder: (context)
+                              //   {
+                              //     return Container(
+                              //       height: 200,
+                              //       decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(10),
+                              //       ),
+                              //       child: Padding(
+                              //         padding: const EdgeInsets.all(24.0),
+                              //         child: Column(
+                              //           crossAxisAlignment: CrossAxisAlignment.start,
+                              //           children:
+                              //           [
+                              //             Expanded(
+                              //               child: Text(
+                              //                 'Area Name',
+                              //                 style: defaultMealNameTextStyle,
+                              //               ),
+                              //             ),
+                              //
+                              //             Expanded(
+                              //               child: Text(
+                              //                 'Region Name',
+                              //                 style: defaultDescriptionTextStyle,
+                              //               ),
+                              //             ),
+                              //
+                              //             Expanded(
+                              //               child: Row(
+                              //                 children:
+                              //                 [
+                              //                   const Text('Longitude is: -128.00'),
+                              //
+                              //                   const Spacer(),
+                              //
+                              //                   const Text('Latitude is: -25.00')
+                              //                 ],
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     );
+                              //   }
+                              // );
                             },
 
                           ),
@@ -170,19 +219,22 @@ class _MapPageState extends State<MapPage> {
                     ],
                   ),
                 ),
-                fallback: (context)=> Center(child: defaultProgressIndicator(context)),
+                fallback: (context)=> Center(child: defaultProgressIndicator(context),),
               ),
             ),
 
-            floatingActionButton: FloatingActionButton(
-              onPressed: ()
-              {
-                getCurrentPosition(context, cubit, isFAB: true);
-              },
+            floatingActionButton: Visibility(
+              visible: cubit.isMapLoaded,
+              child: FloatingActionButton(
+                onPressed: ()
+                {
+                  getCurrentPosition(context, cubit, isFAB: true);
+                },
 
-              elevation: 20,
-              child: const Icon(Icons.gps_fixed_rounded),
+                elevation: 20,
+                child: const Icon(Icons.gps_fixed_rounded),
 
+              ),
             ),
           ),
 
