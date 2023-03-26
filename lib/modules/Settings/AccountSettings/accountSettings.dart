@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/components/imports.dart';
@@ -17,7 +18,7 @@ class _AccountSettingsState extends State<AccountSettings> {
 
   bool isLoading=false; //Check for getting location
 
-  TextEditingController firstNameController= TextEditingController();
+  TextEditingController nameController= TextEditingController();
   TextEditingController lastNameController= TextEditingController();
 
   TextEditingController autoLocationController= TextEditingController();
@@ -34,7 +35,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   @override
   void dispose()
   {
-    firstNameController.dispose();
+    nameController.dispose();
     lastNameController.dispose();
     autoLocationController.dispose();
     super.dispose();
@@ -46,14 +47,32 @@ class _AccountSettingsState extends State<AccountSettings> {
         listener: (context,state){},
         builder: (context,state)
         {
+          var model=AppCubit.userModel;
+
+          if(model!= null)
+          {
+            final data = model.result!;
+
+            //had if (data !=null) {firstNameController.text etc.....}
+            nameController.text= data.name!;
+
+            locationController.text=data.location!;
+
+            autoLocationController.text='Longitude:${data.longitude!}, Latitude:${data.latitude!}';
+          }
+
+
           return Scaffold(
             appBar: AppBar(),
 
-            body: Form(
-              key: formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: SingleChildScrollView(
+            body: ConditionalBuilder(
+              condition: AppCubit.userModel !=null,
+              fallback: (context)=>Center(child: defaultProgressIndicator(context),),
+              builder: (context)=>Form(
+                key: formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:
@@ -80,27 +99,9 @@ class _AccountSettingsState extends State<AccountSettings> {
                         const SizedBox(height: 50,),
 
                         defaultFormField(
-                          controller: firstNameController,
+                          controller: nameController,
                           keyboard: TextInputType.name,
-                          label: 'First Name',
-                          prefix: Icons.person_rounded,
-                          borderRadius: 10,
-                          validate: (value)
-                          {
-                            if(value!.isNotEmpty)
-                              {
-                                return null;
-                              }
-                            return "Name Can't be empty";
-                          },
-                        ),
-
-                        const SizedBox(height: 30,),
-
-                        defaultFormField(
-                          controller: lastNameController,
-                          keyboard: TextInputType.name,
-                          label: 'Last Name',
+                          label: 'Name',
                           prefix: Icons.person_rounded,
                           borderRadius: 10,
                           validate: (value)
@@ -109,7 +110,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                             {
                               return null;
                             }
-                            return "Last Name Can't be empty";
+                            return "Name Can't be empty";
                           },
                         ),
 
@@ -156,26 +157,25 @@ class _AccountSettingsState extends State<AccountSettings> {
                           },
                         ),
 
-
-
                         const SizedBox(height: 50,),
 
                         Center(
                           child: defaultButton(
-                            title: 'submit',
-                            onTap: ()
-                            {
-                              if(formKey.currentState?.validate() ==true)
+                              title: 'submit',
+                              onTap: ()
+                              {
+                                if(formKey.currentState?.validate() ==true)
                                 {
                                   defaultToast(msg: 'Updating...');
                                 }
 
-                            }
+                              }
                           ),
                         ),
 
                       ],
                     ),
+                  ),
                 ),
               ),
             ),

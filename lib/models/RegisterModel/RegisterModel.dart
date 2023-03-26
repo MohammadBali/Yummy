@@ -1,14 +1,14 @@
 class RegisterModel
 {
-  int? code;
+  int? success;
   String? message;
   String? token;
 
   RegisterModel.fromJson(Map<String,dynamic>json)
   {
-    if(json['code']!=null)
+    if(json['success']!=null)
       {
-        code=json['code'];
+        success=json['success'];
       }
 
     if(json['message']!=null)

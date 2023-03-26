@@ -1,16 +1,20 @@
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:yummy/models/UserDataModel/UserDataModel.dart';
+
 class LoginModel
 {
-  int? code;
+  int? success;
   String? message;
   String? token;
-  UserData? userData;
+  UserModel? userData;
 
   LoginModel.fromJson(Map<String,dynamic>json)
   {
-    if(json['code']!=null)
+    if(json['success']!=null)
       {
-        code=json['code'];
+        success=json['success'];
       }
+
     if(json['message']!=null)
       {
         message=json['message'];
@@ -21,30 +25,6 @@ class LoginModel
       token=json['token'];
     }
 
-    if(json['userData']!=null)
-    {
-      userData=UserData.fromJson(json['userData']);
-    }
   }
 
-}
-
-
-class UserData
-{
-  String? name;
-  String? photo;
-
-  UserData.fromJson(Map<String,dynamic>json)
-  {
-    if(json['name']!=null)
-      {
-        name=json['name'];
-      }
-
-    if(json['photo']!=null)
-    {
-      photo=json['photo'];
-    }
-  }
 }

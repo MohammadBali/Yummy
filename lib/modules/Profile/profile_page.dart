@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -18,50 +19,54 @@ class ProfilePage extends StatelessWidget {
       listener: (context,state){},
       builder: (context,state)
       {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        return ConditionalBuilder(
+            condition: AppCubit.userModel !=null,
+            fallback: (context)=>Center(child: defaultProgressIndicator(context)),
+            builder: (context) => SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
 
-              children:
-              [
-                const SizedBox(height: 25,),
+                  children:
+                  [
+                    const SizedBox(height: 25,),
 
-                const Align(
-                  alignment: AlignmentDirectional.center,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    radius: 55,
-                    backgroundImage: AssetImage(
-                        'assets/images/pizza.jpg'),
-                  ),
+                    Align(
+                      alignment: AlignmentDirectional.center,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.blue,
+                        radius: 55,
+                        backgroundImage: AssetImage(
+                            'assets/images/${AppCubit.userModel?.result?.photo}'), //pizza.jpg
+                      ),
+                    ),
+
+                    const SizedBox(height: 25,),
+
+                    Text(
+                      '${AppCubit.userModel?.result?.name}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: defaultHeadlineTextStyle,
+                    ),
+
+                    const SizedBox(height: 50,),
+
+                    settingsItemBuilder(itemName: 'Settings', icon: Icons.settings_rounded, mainColor: Colors.grey.withOpacity(0.5), lista: [HexColor('ADA996'), HexColor('F2F2F2'), HexColor('DBDBDB') ,HexColor('EAEAEA') ] ,func: (){navigateTo(context, const Settings());}),
+
+                    const SizedBox(height: 35,),
+
+                    settingsItemBuilder(itemName: 'Previous Orders', icon: Icons.shopping_basket_rounded, lista:[HexColor('3A1C71'), HexColor('D76D77'), HexColor('FFAF7B')],mainColor: Colors.indigoAccent.withOpacity(0.5),func: (){navigateTo(context, const PreviousOrders());}),
+
+                    const SizedBox(height: 35,),
+
+                    settingsItemBuilder(itemName: 'Favourite Items', icon: Icons.favorite_rounded, lista:[HexColor('EF3B36'), HexColor('FFFFFF')], mainColor: Colors.redAccent.withOpacity(0.5),func: (){}),
+                  ],
                 ),
-
-                const SizedBox(height: 25,),
-
-                Text(
-                  'Mohammad Bali',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: defaultHeadlineTextStyle,
-                ),
-
-                const SizedBox(height: 50,),
-
-                settingsItemBuilder(itemName: 'Settings', icon: Icons.settings_rounded, mainColor: Colors.grey.withOpacity(0.5), lista: [HexColor('ADA996'), HexColor('F2F2F2'), HexColor('DBDBDB') ,HexColor('EAEAEA') ] ,func: (){navigateTo(context, const Settings());}),
-
-                const SizedBox(height: 35,),
-
-                settingsItemBuilder(itemName: 'Previous Orders', icon: Icons.shopping_basket_rounded, lista:[HexColor('3A1C71'), HexColor('D76D77'), HexColor('FFAF7B')],mainColor: Colors.indigoAccent.withOpacity(0.5),func: (){navigateTo(context, const PreviousOrders());}),
-
-                const SizedBox(height: 35,),
-
-                settingsItemBuilder(itemName: 'Favourite Items', icon: Icons.favorite_rounded, lista:[HexColor('EF3B36'), HexColor('FFFFFF')], mainColor: Colors.redAccent.withOpacity(0.5),func: (){}),
-              ],
+              ),
             ),
-          ),
         );
       },
     );

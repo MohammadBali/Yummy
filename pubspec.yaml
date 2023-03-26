@@ -53,6 +53,7 @@ dependencies:
   geocoding: ^2.1.0
   flutter_geocoder: ^0.2.2-nullsafety
   flutter_map: ^3.1.0
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:

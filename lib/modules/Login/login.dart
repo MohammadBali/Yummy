@@ -33,7 +33,7 @@ class Login extends StatelessWidget {
 
           if(state is LoginSuccessState)
             {
-              if(state.loginModel.code==1)
+              if(state.loginModel.success==1)
                 {
                   defaultToast(msg: 'Success', state: ToastStates.success);
 

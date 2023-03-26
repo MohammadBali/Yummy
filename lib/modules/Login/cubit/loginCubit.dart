@@ -1,6 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/models/LoginModel/LoginModel.dart';
 import 'package:yummy/modules/Login/cubit/loginStates.dart';
+import 'package:yummy/shared/components/components.dart';
+import 'package:yummy/shared/network/end_points.dart';
 import 'package:yummy/shared/network/remote/main_dio_helper.dart';
 
 class LoginCubit extends Cubit<LoginStates>
@@ -26,9 +29,9 @@ class LoginCubit extends Cubit<LoginStates>
     emit(LoginLoadingState());
 
     MainDioHelper.postData(
-      url: 'login',
+      url: login,
       data: {
-        'phone':number,
+        'number':number,
         'password':password,
       },
     ).then((value)
@@ -36,6 +39,7 @@ class LoginCubit extends Cubit<LoginStates>
       print('Got Login Data, ${value.data}');
 
       loginModel=LoginModel.fromJson(value.data);
+      AppCubit().getUserData(loginModel?.token);
 
       emit(LoginSuccessState(loginModel!));
     }).catchError((error)

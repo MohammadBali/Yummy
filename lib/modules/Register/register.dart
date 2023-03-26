@@ -61,7 +61,7 @@ class _RegisterState extends State<Register> {
         {
           if(state is UserRegisterSuccessState)
             {
-              if(state.registerModel.code==1)
+              if(state.registerModel.success==1)
                 {
                   print(state.registerModel.message);
                   print(state.registerModel.token);
@@ -73,7 +73,6 @@ class _RegisterState extends State<Register> {
                   CacheHelper.saveData(key: 'token', value: state.registerModel.token).then((value)
                   {
                     token=state.registerModel.token!;
-
                     navigateAndFinish(context, const HomeLayout() );
                   }).catchError((error)
                   {
@@ -268,7 +267,7 @@ class _RegisterState extends State<Register> {
                                       password: passController.value.text,
                                       phoneNumber: phoneController.value.text,
                                       writtenLocation: writtenLocationController.value.text,
-                                      autoLocation: cubit.autoLocationController.value.text,
+                                      // autoLocation: cubit.autoLocationController.value.text,
                                   );
                                 }
                             }
@@ -305,8 +304,6 @@ class _RegisterState extends State<Register> {
                         //     );
                         //   },
                         // ),
-
-
                       ],
                     ),
                   ),

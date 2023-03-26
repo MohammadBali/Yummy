@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/models/UserDataModel/UserDataModel.dart';
 import 'package:yummy/modules/Profile/profile_page.dart';
 import 'package:yummy/shared/components/components.dart';
 
@@ -82,6 +84,28 @@ class AppCubit extends Cubit<AppStates>
     }
     // emit(AppCheckItemListState());
     return false;
+  }
+
+
+  //GET USER DATA...
+
+  static UserModel? userModel;
+
+  void getUserData(String? token) //Decode the Token and get the data of it, then store it in userModel
+  {
+    if(token !='')
+      {
+        try
+        {
+          Map<String,dynamic>dToken = JwtDecoder.decode(token!); //Decode the Token to get Data
+          print('Decoded User Data Successfully in AppCubit, $dToken');
+          userModel=UserModel.fromJson(dToken);
+        }
+        catch(error)
+        {
+          print('ERROR WHILE DECODING JWT, ${error.toString()}');
+        }
+      }
   }
 
 
