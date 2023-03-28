@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/models/MealModel/meal_model.dart';
 import 'package:yummy/modules/Restaurants/restaurant_page.dart';
 import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/styles/styles.dart';
@@ -9,8 +10,10 @@ import 'package:yummy/shared/styles/styles.dart';
 import '../../shared/styles/colors.dart';
 
 class MealDetails extends StatelessWidget {
-  const MealDetails({Key? key}) : super(key: key);
 
+  const MealDetails({Key? key, required this.meal}) : super(key: key);
+
+  final Meal meal;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit,AppStates>(
@@ -42,7 +45,7 @@ class MealDetails extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children:
                     [
-                      mealItemBuilder(context),
+                      mealItemBuilder(context, meal),
                     ],
                   ),
                 )
@@ -55,7 +58,7 @@ class MealDetails extends StatelessWidget {
   }
 
 
-  Widget mealItemBuilder(BuildContext context)
+  Widget mealItemBuilder(BuildContext context, Meal meal)
   {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +66,7 @@ class MealDetails extends StatelessWidget {
       children:
       [
         Text(
-          'Lasagna Meal',
+          meal.name!,
           style: defaultMealNameTextStyle,
         ),
 
@@ -88,7 +91,7 @@ class MealDetails extends StatelessWidget {
               const SizedBox(width: 15,),
 
               Text(
-                'Roadhouse Diner',
+                meal.restaurantName!,
                 style: defaultRestaurantNameInMealTextStyle,
               ),
             ],
@@ -132,7 +135,7 @@ class MealDetails extends StatelessWidget {
         const SizedBox(height: 20,),
 
         Text(
-          'Cheese Filling, Meat, Tomato Sauce, Spinach, etc...',
+          meal.ingredients!,
           style: defaultDescriptionTextStyle,
           maxLines: 4,
           overflow: TextOverflow.ellipsis,
@@ -142,7 +145,7 @@ class MealDetails extends StatelessWidget {
 
         Center(
           child: Text(
-            '6,500 SYP',
+            '${meal.price!} SYP',
             style: defaultPriceTextStyle,
           ),
         ),

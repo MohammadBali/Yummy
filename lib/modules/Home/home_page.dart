@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
         var cubit= AppCubit.get(context);
 
         return ConditionalBuilder(
-            condition: AppCubit.userModel !=null,
+            condition: AppCubit.userModel !=null && cubit.trendyMeals !=null,
             fallback: (context)=>Center(child: defaultProgressIndicator(context)),
             builder: (context)
             {
@@ -85,9 +85,9 @@ class HomePage extends StatelessWidget {
                       ListView.separated(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemBuilder: (context,index)=>mealItemBuilder(context,cubit),
+                        itemBuilder: (context,index)=>mealItemBuilder(context,cubit, cubit.trendyMeals!.data![index]),
                         separatorBuilder: (context,index)=> myDivider(),
-                        itemCount: 5,
+                        itemCount: cubit.trendyMeals!.data!.length,
                       ),
 
                     ],

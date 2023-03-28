@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/home_layout.dart';
 import 'package:yummy/modules/Login/login.dart';
@@ -23,8 +24,15 @@ void main() async {
   bool? isDark = CacheHelper.getData(key: 'isDarkTheme'); //Getting the last Cached ThemeMode
   isDark ??= false;
 
-  if (CacheHelper.getData(key: 'token') != null) {
+  if (CacheHelper.getData(key: 'token') != null)
+  {
     token = CacheHelper.getData(key: 'token'); // Get User Token
+
+    if(JwtDecoder.isExpired(token)==true) //Check if token is expired or not
+    {
+      print('Token is expired');
+      token='';
+    }
   }
 
   Widget widget; //to figure out which widget to send (login, onBoarding or HomePage) we use a widget and set the value in it depending on the token.
@@ -54,7 +62,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers:
       [
-        BlocProvider(create: (BuildContext context)=> AppCubit()..changeTheme(themeFromState: isDark)..getUserData(token) ),
+        BlocProvider(create: (BuildContext context)=> AppCubit()..changeTheme(themeFromState: isDark)..getUserData(token)..getTrendy()..getRestaurants() ),
       ],
 
       child: BlocConsumer<AppCubit,AppStates>(

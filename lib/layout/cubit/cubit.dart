@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/models/MealModel/meal_model.dart';
 import 'package:yummy/models/UserDataModel/UserDataModel.dart';
 import 'package:yummy/modules/Profile/profile_page.dart';
 import 'package:yummy/shared/components/components.dart';
-
+import 'package:yummy/shared/network/remote/main_dio_helper.dart';
+import '../../models/RestaurantsModel/Restaurant_Model.dart';
 import '../../modules/Home/home_page.dart';
 import '../../modules/Restaurants/restaurants_page.dart';
+import '../../shared/network/end_points.dart';
 import '../../shared/network/local/cache_helper.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -95,18 +97,187 @@ class AppCubit extends Cubit<AppStates>
   {
     if(token !='')
       {
+        emit(AppGetUserDataLoadingState());
         try
         {
           Map<String,dynamic>dToken = JwtDecoder.decode(token!); //Decode the Token to get Data
           print('Decoded User Data Successfully in AppCubit, $dToken');
           userModel=UserModel.fromJson(dToken);
+
+          emit(AppGetUserDataSuccessState());
         }
         catch(error)
         {
           print('ERROR WHILE DECODING JWT, ${error.toString()}');
+          emit(AppGetUserDataErrorState());
         }
       }
   }
+
+
+  //REST API METHODS...
+
+
+  //----------------------------------------------\\
+
+  //GET RESTAURANTS...
+
+  RestaurantModel? allRestaurantsModel;
+
+  void getRestaurants()
+  {
+    print('Getting Restaurants...');
+    emit(AppGetAllRestaurantsLoadingState());
+
+    MainDioHelper.getData(
+        url: getAllRestaurants,
+    ).then((value)
+    {
+      print('Got All Restaurants Data,${value.data}');
+      allRestaurantsModel=RestaurantModel.fromJson(value.data);
+      emit(AppGetAllRestaurantsSuccessState());
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING ALL RESTAURANTS, ${error.toString()}');
+
+      emit(AppGetAllRestaurantsErrorState());
+    });
+  }
+
+  //---------------------
+
+
+  //Search for a restaurant.
+  void searchRestaurants(String data)
+  {
+    print('in Searching For a Restaurant...');
+    emit(AppSearchForRestaurantLoadingState());
+
+    MainDioHelper.getData(
+        url: '$searchForRestaurants/$data',
+    ).then((value)
+    {
+      print('Got Search for a restaurants data, ${value.data}');
+
+      emit(AppSearchForRestaurantSuccessState());
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING SEARCH FOR A RESTAURANT, ${error.toString()}');
+      emit(AppSearchForRestaurantErrorState());
+    });
+  }
+
+  //-------------------------
+
+  //Get Meal Details.
+  void getMealDetailsById(int id)
+  {
+    print('In Get Meal..');
+    emit(AppGetMealLoadingState());
+
+    MainDioHelper.getData(
+        url: '$getAMeal/$id/',
+    ).then((value)
+    {
+      print('Got Meals Details, ${value.data}');
+
+
+
+      emit(AppGetMealSuccessState());
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING MEAL BY ID, ${error.toString()}');
+      emit(AppGetMealErrorState());
+    });
+  }
+
+  //------------------------
+
+
+  MealModel? searchMealModel;
+
+  //Search for a Meal
+  void searchMeal(String data)
+  {
+    print('in Search for a Meal...');
+
+    emit(AppSearchMealLoadingState());
+
+    MainDioHelper.getData(
+        url: '$searchForMeal/$data'
+    ).then((value)
+    {
+      print('Got Search for a Meal Data, ${value.data}');
+
+      searchMealModel=MealModel.fromJson(value.data);
+
+      emit(AppSearchMealSuccessState(searchMealModel!.success!));
+    }).catchError((error)
+    {
+      print('ERROR WHILE SEARCHING FOR A MEAL, ${error.toString()}');
+      defaultToast(msg: "Couldn't Find Any results");
+      emit(AppSearchMealErrorState());
+    });
+  }
+
+  //-------------------
+
+
+  MealModel? trendyMeals;
+
+  //Get Trendy Meals
+  void getTrendy()
+  {
+    print('in GetTrendy Meals...');
+    emit(AppGetTrendyMealsLoadingState());
+
+    MainDioHelper.getData(
+        url: getTrendyMeals,
+    ).then((value)
+    {
+      print('Got Trendy Meals, ${value.data}');
+
+      trendyMeals=MealModel.fromJson(value.data);
+
+      emit(AppGetTrendyMealsSuccessState());
+
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING TRENDY MEALS, ${error.toString()}');
+      emit(AppGetTrendyMealsErrorState());
+    });
+  }
+
+
+  //-----------------
+
+  //Get Meals Offers
+  void getOffers()
+  {
+    print('In Getting Offers...');
+    emit(AppGetOffersLoadingState());
+
+    MainDioHelper.getData(
+        url: mealsOffers
+    ).then((value)
+    {
+      print('Got Offers Data, ${value.data}');
+
+
+      emit(AppGetOffersSuccessState());
+
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING OFFERS, ${error.toString()}');
+      emit(AppGetOffersErrorState());
+    });
+  }
+
+
+
+
+  //----------------------------------------------------------------------\\
+
 
 
   //MAP LONGITUDE AND LATITUDE for mapPage

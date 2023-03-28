@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_geocoder/geocoder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
+import 'package:yummy/models/MealModel/meal_model.dart';
+import 'package:yummy/models/RestaurantsModel/Restaurant_Model.dart';
 import 'package:yummy/shared/styles/colors.dart';
 
 import '../../modules/Meal_Details/meal_details.dart';
@@ -192,17 +193,18 @@ Widget myDivider({Color? c=Colors.grey, double padding=0}) => Container(height: 
 //------------------------------------------------------------------------\\
 
 //Meal Item Builder
-Widget mealItemBuilder(BuildContext context, AppCubit cubit)
+Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double sizedBoxHeight=20})
 {
   return GestureDetector(
     onTap: ()
     {
       // navigateTo(context, ShowItem(model: model,));
-      navigateTo(context, const MealDetails());
+      navigateTo(context, MealDetails(meal: meal,));
     },
     child: Column(
       children: [
-        const SizedBox(height: 20,),
+
+        SizedBox(height: sizedBoxHeight,),
 
         Container(
           width: double.infinity,
@@ -212,7 +214,8 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit)
             color: Colors.blue.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
-              image: const AssetImage('assets/images/lasagna.jpg'), //model.recipe!.image!
+              image: const AssetImage('assets/images/lasagna.jpg'),
+              // image: NetworkImage(meal.photo!,),
               fit: BoxFit.fitWidth,
               opacity: 0.2,
               onError:(error,stacktrace)
@@ -229,10 +232,10 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit)
             [
               const Spacer(),
 
-              const Align(
+              Align(
                 alignment: Alignment.center,
                 child: Text(
-                  'Food Name',
+                  meal.name!,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 16,
@@ -264,7 +267,7 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit)
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
-                        '6500 SYP',
+                        '${meal.price} SYP',
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 16,
@@ -280,7 +283,7 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit)
           ),
         ),
 
-        const SizedBox(height: 20,),
+        SizedBox(height: sizedBoxHeight,),
       ],
     ),
   );
@@ -291,7 +294,7 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit)
 
 // Restaurant Item Builder
 
-Widget restaurantItemBuilder(BuildContext context)
+Widget restaurantItemBuilder(BuildContext context, Restaurant rest)
 {
   return GestureDetector(
     onTap: ()
@@ -330,19 +333,19 @@ Widget restaurantItemBuilder(BuildContext context)
                   alignment: Alignment.center,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children:const
+                    children:
                     [
-                      CircleAvatar(
+                      const CircleAvatar(
                         backgroundColor: Colors.greenAccent,
                         radius: 5,
                       ),
 
                       const SizedBox(width: 5,),
 
-                      const Text(
-                        'Burger King',
+                      Text(
+                        rest.name!,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                         ),
                       ),
@@ -351,12 +354,12 @@ Widget restaurantItemBuilder(BuildContext context)
                 ),
               ),
 
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
+               Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Text(
-                    '10.00 AM - 12.00 PM',
+                    '${rest.openingTime} - ${rest.closingTime}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

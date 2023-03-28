@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/modules/Search/Search.dart';
 import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/components/imports.dart';
 
@@ -39,6 +40,14 @@ class HomeLayout extends StatelessWidget {
                   navigateTo(context, const MapPage() );
                 },
                 icon: Icon(Icons.map_rounded, color: defaultColor,)
+              ),
+
+              IconButton(
+                  onPressed: ()
+                  {
+                    navigateTo(context, Search() );
+                  },
+                  icon: Icon(Icons.search_rounded, color: defaultColor,)
               ),
             ],
           ),
