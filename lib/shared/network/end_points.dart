@@ -17,3 +17,5 @@ const getTrendyMeals='user/getTrendy';
 const mealsOffers='user/getOffers';
 
 const allRestaurantMeals='user/getResturentMeals';
+
+const getRestaurantById='user/getresturentById';

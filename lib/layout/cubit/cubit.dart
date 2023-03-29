@@ -215,6 +215,29 @@ class AppCubit extends Cubit<AppStates>
     });
   }
 
+  RestaurantModel? restaurantModel;
+  void getRestaurant(int id)
+  {
+    print('In Getting a restaurant thorugh ID...');
+    emit(AppGetRestaurantByIDLoadingState());
+
+    MainDioHelper.getData(
+        url: '$getRestaurantById/$id/'
+    ).then((value)
+    {
+      print('Got Restaurant details, ${value.data}');
+
+      restaurantModel=RestaurantModel.fromJson(value.data);
+      emit(AppGetRestaurantByIDSuccessState());
+
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING A RESTAURANT BY ID, ${error.toString()}');
+
+      emit(AppGetRestaurantByIDErrorState());
+    });
+  }
+
   //------------------------
 
 
@@ -275,6 +298,8 @@ class AppCubit extends Cubit<AppStates>
 
   //-----------------
 
+  MealModel? offersModel;
+
   //Get Meals Offers
   void getOffers()
   {
@@ -287,7 +312,7 @@ class AppCubit extends Cubit<AppStates>
     {
       print('Got Offers Data, ${value.data}');
 
-
+      offersModel=MealModel.fromJson(value.data);
       emit(AppGetOffersSuccessState());
 
     }).catchError((error)

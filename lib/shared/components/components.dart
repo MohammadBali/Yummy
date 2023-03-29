@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:material_dialogs/dialogs.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/models/MealModel/meal_model.dart';
 import 'package:yummy/models/RestaurantsModel/Restaurant_Model.dart';
 import 'package:yummy/shared/styles/colors.dart';
+import 'package:yummy/shared/styles/styles.dart';
 
 import '../../modules/Meal_Details/meal_details.dart';
 import '../../modules/Restaurants/restaurant_page.dart';
@@ -463,3 +465,49 @@ Widget defaultProgressIndicator(BuildContext context)
 
 
 isNumeric(string) => num.tryParse(string) != null;
+
+
+//------------------------------------------------------------------------------------------\\
+
+
+Widget defaultAlertDialog(
+    {
+      required BuildContext context,
+      required String title,
+      required Widget content,
+    })
+{
+  return AlertDialog(
+    title: Text(
+      title,
+      textAlign: TextAlign.center,
+
+    ),
+
+    content: content,
+
+    elevation: 50,
+
+    contentTextStyle: TextStyle(
+      fontSize: 18,
+      color:  AppCubit.get(context).isDarkTheme? Colors.white: Colors.black,
+      fontFamily: 'Nunito',
+    ),
+
+    titleTextStyle: TextStyle(
+      fontSize: 24,
+      color:  AppCubit.get(context).isDarkTheme? Colors.white: Colors.black,
+      fontWeight: FontWeight.w600,
+      fontFamily: 'Nunito',
+    ),
+
+    backgroundColor: AppCubit.get(context).isDarkTheme? defaultAlertDarkColor: defaultHomeColor,
+
+    shape: Dialogs.dialogShape,
+
+
+
+
+  );
+}
+

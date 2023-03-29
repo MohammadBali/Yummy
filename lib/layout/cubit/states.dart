@@ -64,6 +64,18 @@ class AppSearchForRestaurantSuccessState extends AppStates {}
 
 class AppSearchForRestaurantErrorState extends AppStates{}
 
+
+
+//----------------------------------------------------\\
+
+// GET A RESTAURANT THROUGH ID:
+
+class AppGetRestaurantByIDLoadingState extends AppStates{}
+
+class AppGetRestaurantByIDSuccessState extends AppStates {}
+
+class AppGetRestaurantByIDErrorState extends AppStates{}
+
 //----------------------------------------------------\\
 
 // GET A MEAL:

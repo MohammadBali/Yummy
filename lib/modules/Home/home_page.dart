@@ -5,7 +5,10 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
+import 'package:yummy/modules/Meal_Details/meal_details.dart';
 import 'package:yummy/shared/components/components.dart';
+import '../../models/MealModel/meal_model.dart';
+import '../../shared/styles/colors.dart';
 import '../../shared/styles/styles.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,7 +23,7 @@ class HomePage extends StatelessWidget {
         var cubit= AppCubit.get(context);
 
         return ConditionalBuilder(
-            condition: AppCubit.userModel !=null && cubit.trendyMeals !=null,
+            condition: AppCubit.userModel !=null && cubit.trendyMeals !=null &&cubit.offersModel!=null,
             fallback: (context)=>Center(child: defaultProgressIndicator(context)),
             builder: (context)
             {
@@ -51,9 +54,118 @@ class HomePage extends StatelessWidget {
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
-                            itemBuilder: (context,index)=>offerItemBuilder(function: (){}),
+                            itemBuilder: (context,index)=>offerItemBuilder(
+                                function: () async
+                                {
+                                  // offersPopupDialog(context, cubit.offersModel!.data![index]);
+                                  await showDialog(
+                                      context: context,
+                                      builder:(context)
+                                      {
+                                        return defaultAlertDialog(
+                                          context: context,
+                                          title: cubit.offersModel!.data![index].name!,
+                                          content: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+
+                                                Text(
+                                                  cubit.offersModel!.data![index].ingredients!,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color:  AppCubit.get(context).isDarkTheme? Colors.white: Colors.black,
+                                                  ),
+                                                ),
+
+                                                const SizedBox(height: 15,),
+
+                                                Image(
+                                                  image: NetworkImage(cubit.offersModel!.data![index].photo!),
+                                                  fit: BoxFit.cover,
+                                                  height: 250,
+                                                  width: 250,
+                                                  errorBuilder: (context,error,stacktrace)
+                                                  {
+                                                    print("Couldn't Get Offer Image, ${error.toString()}");
+
+                                                    return const Image(
+                                                      image: AssetImage('assets/images/lasagna.jpg'),
+                                                      fit: BoxFit.cover,
+                                                    );
+                                                  },
+                                                ),
+
+                                                const SizedBox(height: 10,),
+
+                                                Row(
+                                                  children:
+                                                  [
+                                                    Text(
+                                                      '${cubit.offersModel!.data![index].price} SYP',
+                                                      style: TextStyle(
+                                                        fontSize: 22,
+                                                        fontWeight: FontWeight.bold,  //was bold
+                                                        letterSpacing: 1,
+                                                        color: AppCubit.get(context).isDarkTheme? goldenColor : defaultColor,
+                                                      ),
+                                                    ),
+
+                                                    const Spacer(),
+
+                                                    TextButton(
+
+                                                      child:const Text(
+                                                        'Check Meal',
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+
+                                                      onPressed: ()
+                                                      {
+                                                        navigateTo(context, MealDetails(meal: cubit.offersModel!.data![index]));
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                Visibility(
+                                                  visible: cubit.offersModel!.data![index].discount!=null,
+                                                  child: const SizedBox(height: 5,)
+                                                ),
+
+                                                ConditionalBuilder(
+                                                    condition: cubit.offersModel!.data![index].discount !=null,
+                                                    fallback: (context)=>const Text(''),
+                                                    builder: (context)=>Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children:
+                                                      [
+                                                        Icon(Icons.discount, size: 20, color: defaultDarkColor,),
+
+                                                        const SizedBox(width: 10,),
+
+                                                        Text(
+                                                          'Discount is available!',
+                                                          style: TextStyle(
+                                                              color: defaultDarkColor,
+                                                              fontSize: 16
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                  );
+                                },
+                                ),
                             separatorBuilder: (context,index)=> const SizedBox(width: 15,),
-                            itemCount: 5
+                            itemCount: cubit.offersModel!.data!.length
                         ),
                       ),
 
@@ -80,7 +192,6 @@ class HomePage extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 10,),
-
 
                       ListView.separated(
                         physics: const NeverScrollableScrollPhysics(),

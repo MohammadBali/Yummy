@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
@@ -76,8 +77,9 @@ class MealDetails extends StatelessWidget {
 
           onTap: ()
           {
-            // cubit.getRestaurantMeals(meal.restaurantId!);
-            // navigateTo(context,  RestaurantPage());
+            cubit.getRestaurantMeals(meal.restaurantId!);
+            cubit.getRestaurant(meal.restaurantId!);
+            navigateTo(context,  RestaurantPage(restaurant: cubit.restaurantModel?.data?[0],));
           },
 
           child: Row(
@@ -149,11 +151,34 @@ class MealDetails extends StatelessWidget {
 
         const SizedBox(height: 30,),
 
-        Center(
-          child: Text(
-            '${meal.price!} SYP',
-            style: defaultPriceTextStyle,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:
+          [
+            Text(
+              '${meal.price!} SYP',
+              style: TextStyle(
+                fontSize: meal.discount !=null ? 18 : 22,
+                fontWeight: meal.discount !=null ? FontWeight.w300 :FontWeight.bold,  //was bold
+                letterSpacing: 1,
+                color: Colors.blue,
+                decoration: meal.discount !=null ?TextDecoration.lineThrough : TextDecoration.none,
+                decorationStyle: TextDecorationStyle.wavy,
+                decorationColor: Colors.redAccent
+              ),
+            ),
+
+            const SizedBox(width: 10,),
+
+            ConditionalBuilder(
+                condition: meal.discount !=null,
+                builder: (context)=> Text(
+                  '${meal.price - (meal.discount * meal.price)/100} SYP',
+                  style: defaultPriceTextStyle,
+                ),
+                fallback: (context)=>const Text(''),
+            ),
+          ],
         ),
 
         const SizedBox(height: 30,),

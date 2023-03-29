@@ -13,3 +13,5 @@ MaterialColor defaultDarkColor= getMaterialColor(Colors.redAccent.shade200); //C
 Color defaultHomeColor= HexColor('F2F6F8'); //a light Blue Color.
 
 Color defaultHomeDarkColor = HexColor('121212'); //0c0c0d
+
+Color defaultAlertDarkColor= HexColor('222223');

@@ -180,6 +180,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             onWillPop: ()async
             {
               cubit.restaurantMeals=null;
+              restaurant=null;
               cubit.changeCurrentItemList(0);
               return true;
             },
