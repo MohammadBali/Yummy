@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
 import 'package:yummy/modules/Meal_Details/meal_details.dart';
@@ -64,7 +65,7 @@ class HomePage extends StatelessWidget {
                                       {
                                         return defaultAlertDialog(
                                           context: context,
-                                          title: cubit.offersModel!.data![index].name!,
+                                          title: cubit.offersModel!.data![index].name!.capitalize!,
                                           content: SingleChildScrollView(
                                             child: Column(
                                               children: [

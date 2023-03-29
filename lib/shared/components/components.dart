@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:material_dialogs/dialogs.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/models/MealModel/meal_model.dart';
 import 'package:yummy/models/RestaurantsModel/Restaurant_Model.dart';
@@ -238,7 +239,7 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double 
               Align(
                 alignment: Alignment.center,
                 child: Text(
-                  meal.name!,
+                  meal.name!.capitalize!,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 16,
@@ -348,7 +349,7 @@ Widget restaurantItemBuilder(BuildContext context, AppCubit cubit, Restaurant re
                       const SizedBox(width: 5,),
 
                       Text(
-                        rest.name!,
+                        rest.name!.capitalize!,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 16,

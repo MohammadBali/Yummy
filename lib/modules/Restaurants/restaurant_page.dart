@@ -2,6 +2,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
 import 'package:yummy/models/RestaurantsModel/Restaurant_Model.dart';
@@ -100,7 +101,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             children: [
                               Center(
                                   child: Text(
-                                    restaurant!.name!,
+                                    restaurant!.name!.capitalize!,
                                     style: defaultRestaurantNameTextStyle,
                                   )
                               ),

@@ -1,6 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/layout/cubit/states.dart';
 import 'package:yummy/models/MealModel/meal_model.dart';
@@ -67,7 +68,7 @@ class MealDetails extends StatelessWidget {
       children:
       [
         Text(
-          meal.name!,
+          meal.name!.capitalize!,
           style: defaultMealNameTextStyle,
         ),
 
@@ -94,7 +95,7 @@ class MealDetails extends StatelessWidget {
               const SizedBox(width: 15,),
 
               Text(
-                meal.restaurantName!,
+                meal.restaurantName!.capitalize!,
                 style: defaultRestaurantNameInMealTextStyle,
               ),
             ],
