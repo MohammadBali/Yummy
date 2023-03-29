@@ -111,3 +111,15 @@ class AppGetOffersLoadingState extends AppStates{}
 class AppGetOffersSuccessState extends AppStates{}
 
 class AppGetOffersErrorState extends AppStates{}
+
+
+//----------------------------------------------------\\
+
+
+// GET RESTAURANT MEALS:
+
+class AppGetRestaurantMealsLoadingState extends AppStates{}
+
+class AppGetRestaurantMealsSuccessState extends AppStates{}
+
+class AppGetRestaurantMealsErrorState extends AppStates{}

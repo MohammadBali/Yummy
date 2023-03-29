@@ -1,4 +1,4 @@
-const String localhost='https://a800-5-155-176-87.eu.ngrok.io';
+const String localhost='https://12dc-185-177-124-199.eu.ngrok.io';
 
 const login='user/login';
 
@@ -15,3 +15,5 @@ const searchForMeal='user/searchMealsByName';
 const getTrendyMeals='user/getTrendy';
 
 const mealsOffers='user/getOffers';
+
+const allRestaurantMeals='user/getResturentMeals';

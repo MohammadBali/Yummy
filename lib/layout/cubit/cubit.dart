@@ -191,6 +191,30 @@ class AppCubit extends Cubit<AppStates>
     });
   }
 
+
+  //Get all meals provided by a specified restaurant.
+  MealModel? restaurantMeals;
+  void getRestaurantMeals(int id)
+  {
+    print('In Getting Restaurant Meals...');
+    emit(AppGetRestaurantMealsLoadingState());
+
+    MainDioHelper.getData(
+        url: '$allRestaurantMeals/$id/'
+    ).then((value)
+    {
+      print('Got Restaurant meals data, ${value.data}');
+
+      restaurantMeals=MealModel.fromJson(value.data);
+
+      emit(AppGetRestaurantMealsSuccessState());
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING RESTAURANT MEALS, ${error.toString()}');
+      emit(AppGetRestaurantMealsErrorState());
+    });
+  }
+
   //------------------------
 
 
@@ -272,8 +296,6 @@ class AppCubit extends Cubit<AppStates>
       emit(AppGetOffersErrorState());
     });
   }
-
-
 
 
   //----------------------------------------------------------------------\\

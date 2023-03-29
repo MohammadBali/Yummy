@@ -45,7 +45,7 @@ class MealDetails extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children:
                     [
-                      mealItemBuilder(context, meal),
+                      mealItemBuilder(context, cubit, meal),
                     ],
                   ),
                 )
@@ -58,7 +58,7 @@ class MealDetails extends StatelessWidget {
   }
 
 
-  Widget mealItemBuilder(BuildContext context, Meal meal)
+  Widget mealItemBuilder(BuildContext context,AppCubit cubit, Meal meal)
   {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +76,8 @@ class MealDetails extends StatelessWidget {
 
           onTap: ()
           {
-            navigateTo(context, const RestaurantPage());
+            // cubit.getRestaurantMeals(meal.restaurantId!);
+            // navigateTo(context,  RestaurantPage());
           },
 
           child: Row(
@@ -109,13 +110,18 @@ class MealDetails extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(3),
                 child: Image(
-                  image: const AssetImage('assets/images/lasagna.jpg'),
+                  // image: const AssetImage('assets/images/lasagna.jpg'),
+                  image: NetworkImage(meal.photo!),
                   fit: BoxFit.cover,
                   isAntiAlias: true,
                   errorBuilder: (context,object,trace)
                   {
                     print('Error While Getting Image, ${object.toString()}');
-                    return const Image(image: AssetImage('assets/images/lasagna.jpg'),);
+                    return const Image(
+                      image: AssetImage('assets/images/lasagna.jpg'),
+                      fit: BoxFit.cover,
+                      isAntiAlias: true,
+                    );
                   },
                 ),
               ),

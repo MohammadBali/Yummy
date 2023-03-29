@@ -31,7 +31,7 @@ class RestaurantsPage extends StatelessWidget {
                   ListView.separated(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemBuilder: (context,index)=>restaurantItemBuilder(context, cubit.allRestaurantsModel!.data![index]!),
+                      itemBuilder: (context,index)=>restaurantItemBuilder(context, cubit, cubit.allRestaurantsModel!.data![index]!),
                       separatorBuilder: (context,state)=> myDivider(),
                       itemCount: cubit.allRestaurantsModel!.data!.length
                   ),

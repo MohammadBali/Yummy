@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -214,8 +215,8 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double 
             color: Colors.blue.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
-              image: const AssetImage('assets/images/lasagna.jpg'),
-              // image: NetworkImage(meal.photo!,),
+              // image: const AssetImage('assets/images/lasagna.jpg'),
+              image: NetworkImage(meal.photo!,),
               fit: BoxFit.fitWidth,
               opacity: 0.2,
               onError:(error,stacktrace)
@@ -262,7 +263,7 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double 
 
                   const Spacer(),
 
-                   Padding(
+                  Padding(
                     padding: const EdgeInsetsDirectional.only(end: 8.0),
                     child: Align(
                       alignment: Alignment.bottomRight,
@@ -270,9 +271,9 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double 
                         '${meal.price} SYP',
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: cubit.isDarkTheme? goldenColor: steelTealColor
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: cubit.isDarkTheme? goldenColor: steelTealColor
                         ),
                       ),
                     ),
@@ -282,6 +283,7 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double 
             ],
           ),
         ),
+
 
         SizedBox(height: sizedBoxHeight,),
       ],
@@ -294,12 +296,13 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double 
 
 // Restaurant Item Builder
 
-Widget restaurantItemBuilder(BuildContext context, Restaurant rest)
+Widget restaurantItemBuilder(BuildContext context, AppCubit cubit, Restaurant rest)
 {
   return GestureDetector(
     onTap: ()
     {
-      navigateTo(context, const RestaurantPage());
+      cubit.getRestaurantMeals(rest.id!);
+      navigateTo(context, RestaurantPage(restaurant: rest,));
     },
     child: Column(
       children: [
@@ -359,7 +362,7 @@ Widget restaurantItemBuilder(BuildContext context, Restaurant rest)
                 child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Text(
-                    '${rest.openingTime} - ${rest.closingTime}',
+                    '${rest.openingTime?.substring(0,5)} AM - ${rest.closingTime?.substring(0,5)} PM',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
