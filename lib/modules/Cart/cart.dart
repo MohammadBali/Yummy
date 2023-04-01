@@ -1,3 +1,7 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:yummy/shared/components/components.dart';
+
+import '../../models/MealModel/meal_model.dart';
 import '../../shared/components/imports.dart';
 
 class Cart extends StatelessWidget {
@@ -9,16 +13,165 @@ class Cart extends StatelessWidget {
         listener: (context,state){},
         builder: (context,state)
         {
+          var cubit=AppCubit.get(context);
           return Scaffold(
             appBar: AppBar(),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(),
+            body: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: ConditionalBuilder(
+                condition: cubit.cartMeals.isNotEmpty,
+                fallback: (context)=>const Center(child: Text('Wow,Such Empty :(', style: TextStyle(fontSize: 20),)),
+                builder: (context)
+                {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children:
+                    [
+                      Text(
+                        'Your Cart',
+                        style: defaultHeadlineTextStyle,
+                      ),
+
+                      const SizedBox(height: 30,),
+
+                      Expanded(
+                        child: ListView.separated(
+                            // shrinkWrap: true,
+                            // physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context,index)=>itemBuilder(cubit.cartMeals[index], cubit, index),
+                            separatorBuilder: (context,index)=>const SizedBox(height: 25,),
+                            itemCount: cubit.cartMeals.length,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20,),
+                      
+                      SizedBox(
+                        width: double.infinity,
+                        child: defaultButton(onTap: (){}, title: 'Submit Order')),
+
+                      const SizedBox(height: 20,),
+
+                      Text(
+                        'TOTAL PRICE: ${cubit.cartCost} SYP',
+                        style: defaultPriceTextStyle,
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           );
         },
+    );
+  }
+  
+  Widget itemBuilder(Meal meal, AppCubit cubit, int index)
+  {
+    return Container(
+      width: double.infinity,
+      height: 100,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(10),
+        image: DecorationImage(
+          image: NetworkImage(meal.photo!,),
+          fit: BoxFit.fitWidth,
+          opacity: 0.19,
+          onError:(error,stacktrace)
+          {
+            print('Error in getting image, ${error.toString()}');
+          },
+        ),
+      ),
+
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Column(
+          children:
+          [
+            Expanded(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  meal.name!,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ),
+            ),
+
+            Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  meal.discount==null ? 'Price: ${meal.price! * meal.quantity}' : 'Price: ${meal.quantity* (meal.price - (meal.discount * meal.price)/100) }',
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,  //was bold
+                      letterSpacing: 1,
+                      color: steelTealColor
+                  ),
+                ),
+              ),
+            ),
+
+            Expanded(
+              child: Row(
+                children:
+                [
+                  const Text(
+                    'Quantity:',
+                    style: TextStyle(
+                      fontSize: 16,
+
+                    ),
+                  ),
+
+                  const SizedBox(width: 10,),
+
+                  Text(
+                    '${meal.quantity}'
+                  ),
+
+                  const Spacer(),
+
+                  InkWell(
+                    onTap: ()
+                    {
+                      cubit.changeQuantityInCart(index: index, increase: true);
+                    },
+                    child: Icon(
+                      Icons.add,
+                      size: 25,
+                      color: cubit.isDarkTheme? defaultDarkColor : defaultColor,
+                    )
+                  ),
+
+                  const SizedBox(width: 5,),
+
+                  InkWell(
+                      onTap: ()
+                      {
+                        cubit.changeQuantityInCart(index: index, increase: false);
+                      },
+                      child: Icon(
+                        Icons.remove,
+                        size: 25,
+                        color: cubit.isDarkTheme? defaultDarkColor : defaultColor,
+                      )
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

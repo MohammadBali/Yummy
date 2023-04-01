@@ -424,23 +424,89 @@ class AppCubit extends Cubit<AppStates>
   }
 
 
+  //-------------------------------------------------------------------------\\
+
+
   // USER CART....
 
   bool isCartShown=false;
+
+  double cartCost=0;
 
   List<Meal> cartMeals=[];
 
   void addToCart(Meal meal)
   {
+    print('Adding a meal to cart..., number of elements before adding is: ${cartMeals.length}');
+
     if(isCartShown==false)
     {
       isCartShown=true;
       emit(AppCartIsShownState());
     }
 
-    print('Adding a meal to cart..., number of elements is: ${cartMeals.length}');
-    cartMeals.add(meal);
+    bool isFound=false;
+    for (var element in cartMeals)
+    {
+      if(element.id! == meal.id!)
+        {
+          element.quantity++;
+          totalCartCost();
+          isFound==true;
+          break;
+        }
+    }
+
+    if(isFound==false)
+      {
+        meal.quantity=1;
+        cartMeals.add(meal);
+        totalCartCost();
+      }
     emit(AppAddToCartState());
+  }
+
+  void changeQuantityInCart({required int index, required bool increase})
+  {
+    if(increase==true)
+    {
+      cartMeals.elementAt(index).quantity++;
+      totalCartCost();
+      emit(AppChangeQuantityInCartState());
+    }
+    else
+    {
+      if(cartMeals.elementAt(index).quantity ==1)
+        {
+          cartMeals.removeAt(index);
+          totalCartCost();
+          emit(AppRemoveItemFromCartState());
+        }
+      else
+        {
+          cartMeals.elementAt(index).quantity--;
+          totalCartCost();
+          emit(AppChangeQuantityInCartState());
+        }
+    }
+  }
+
+  void totalCartCost()
+  {
+    cartCost=0;
+    for(var element in cartMeals)
+      {
+        if(element.discount !=null)
+        {
+          cartCost=cartCost + (element.quantity * (element.price - (element.discount * element.price)/100) ) ;
+        }
+        else
+        {
+          cartCost=cartCost + (element.quantity * element.price!) ;
+        }
+      }
+
+    emit(AppChangeCartCostState());
   }
 
 

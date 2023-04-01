@@ -124,7 +124,7 @@ class HomePage extends StatelessWidget {
 
                                                       onPressed: ()
                                                       {
-                                                        navigateTo(context, MealDetails(meal: cubit.offersModel!.data![index]));
+                                                        navigateTo(context, MealDetails(meal: cubit.offersModel!.data![index], isFromRestaurant: false,));
                                                       },
                                                     ),
                                                   ],

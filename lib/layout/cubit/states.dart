@@ -139,8 +139,14 @@ class AppGetRestaurantMealsErrorState extends AppStates{}
 
 //----------------------------------------------------\\
 
-// ADD TO CART :
+// CART STATES :
 
 class AppAddToCartState extends AppStates{}
 
 class AppCartIsShownState extends AppStates{}
+
+class AppChangeQuantityInCartState extends AppStates{}
+
+class AppRemoveItemFromCartState extends AppStates{}
+
+class AppChangeCartCostState extends AppStates{}

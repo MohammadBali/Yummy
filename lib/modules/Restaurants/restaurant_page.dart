@@ -187,6 +187,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             {
               cubit.restaurantMeals=null;
               restaurant=null;
+              cubit.cartMeals.clear();
               cubit.changeCurrentItemList(0);
               return true;
             },
@@ -208,7 +209,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemBuilder: (context,index)=> mealItemBuilder(context,cubit, meals[index]),
+                itemBuilder: (context,index)=> mealItemBuilder(context,cubit, meals[index], isFromRest: true),
                 separatorBuilder: (context,index)=> myDivider(),
                 itemCount: meals.length
             )

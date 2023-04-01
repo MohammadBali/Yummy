@@ -13,9 +13,10 @@ import '../../shared/styles/colors.dart';
 
 class MealDetails extends StatelessWidget {
 
-  const MealDetails({Key? key, required this.meal}) : super(key: key);
+  const MealDetails({Key? key, required this.meal, required this.isFromRestaurant}) : super(key: key);
 
   final Meal meal;
+  final bool isFromRestaurant;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit,AppStates>(
@@ -78,9 +79,19 @@ class MealDetails extends StatelessWidget {
 
           onTap: ()
           {
-            cubit.getRestaurantMeals(meal.restaurantId!);
-            cubit.getRestaurant(meal.restaurantId!);
-            navigateTo(context,  RestaurantPage(restaurant: cubit.restaurantModel?.data?[0],));
+            if(isFromRestaurant==false)
+              {
+                print('NO POP MEAL FROM RESTAURANT');
+
+                cubit.getRestaurantMeals(meal.restaurantId!);
+                cubit.getRestaurant(meal.restaurantId!);
+                navigateTo(context,  RestaurantPage(restaurant: cubit.restaurantModel?.data?[0],));
+              }
+            else
+              {
+                print('POP MEAL FROM RESTAURANT');
+                Navigator.pop(context);
+              }
           },
 
           child: Row(
@@ -190,6 +201,20 @@ class MealDetails extends StatelessWidget {
           onTap: ()
           {
             cubit.addToCart(meal);
+            if(isFromRestaurant==false)
+            {
+              print('NO POP MEAL FROM RESTAURANT');
+
+              cubit.getRestaurantMeals(meal.restaurantId!);
+              cubit.getRestaurant(meal.restaurantId!);
+              navigateTo(context,  RestaurantPage(restaurant: cubit.restaurantModel?.data?[0],));
+            }
+            else
+            {
+              print('POP MEAL FROM RESTAURANT');
+              Navigator.pop(context);
+            }
+
           },
           child: Row(
             // mainAxisAlignment: MainAxisAlignment.center,

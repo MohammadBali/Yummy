@@ -34,6 +34,12 @@ class Meal
   String? restaurantName;
   dynamic discount;
 
+  int quantity=0; //Quantity of this item to be sent in order.
+
+  Meal()
+  {
+    quantity=0;
+  }
 
   Meal.fromJson(Map<String,dynamic>json)
   {

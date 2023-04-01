@@ -197,13 +197,13 @@ Widget myDivider({Color? c=Colors.grey, double padding=0}) => Container(height: 
 //------------------------------------------------------------------------\\
 
 //Meal Item Builder
-Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double sizedBoxHeight=20})
+Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double sizedBoxHeight=20, bool isFromRest=false})
 {
   return GestureDetector(
     onTap: ()
     {
       // navigateTo(context, ShowItem(model: model,));
-      navigateTo(context, MealDetails(meal: meal,));
+      navigateTo(context, MealDetails(meal: meal, isFromRestaurant: isFromRest,));
     },
     child: Column(
       children: [
