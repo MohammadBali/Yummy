@@ -189,7 +189,7 @@ class MealDetails extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
           onTap: ()
           {
-            //Navigate to Restaurant
+            cubit.addToCart(meal);
           },
           child: Row(
             // mainAxisAlignment: MainAxisAlignment.center,

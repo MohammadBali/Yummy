@@ -319,7 +319,8 @@ Widget restaurantItemBuilder(BuildContext context, AppCubit cubit, Restaurant re
             color: Colors.black.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
-              image: const AssetImage('assets/images/american_diner.jpg'), //model.recipe!.image!
+              // image: const AssetImage('assets/images/american_diner.jpg'), //model.recipe!.image!
+              image: NetworkImage(rest.photo!),
               fit: BoxFit.fitWidth,
               opacity: 0.2,
               onError:(error,stacktrace)

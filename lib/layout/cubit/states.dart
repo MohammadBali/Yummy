@@ -135,3 +135,12 @@ class AppGetRestaurantMealsLoadingState extends AppStates{}
 class AppGetRestaurantMealsSuccessState extends AppStates{}
 
 class AppGetRestaurantMealsErrorState extends AppStates{}
+
+
+//----------------------------------------------------\\
+
+// ADD TO CART :
+
+class AppAddToCartState extends AppStates{}
+
+class AppCartIsShownState extends AppStates{}

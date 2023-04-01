@@ -424,8 +424,24 @@ class AppCubit extends Cubit<AppStates>
   }
 
 
+  // USER CART....
 
+  bool isCartShown=false;
 
+  List<Meal> cartMeals=[];
+
+  void addToCart(Meal meal)
+  {
+    if(isCartShown==false)
+    {
+      isCartShown=true;
+      emit(AppCartIsShownState());
+    }
+
+    print('Adding a meal to cart..., number of elements is: ${cartMeals.length}');
+    cartMeals.add(meal);
+    emit(AppAddToCartState());
+  }
 
 
 

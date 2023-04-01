@@ -10,6 +10,7 @@ import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/styles/styles.dart';
 import '../../models/MealModel/meal_model.dart';
 import '../../shared/styles/colors.dart';
+import '../Cart/cart.dart';
 
 class RestaurantPage extends StatefulWidget {
    const RestaurantPage({Key? key, required this.restaurant,}) : super(key: key);
@@ -65,13 +66,16 @@ class _RestaurantPageState extends State<RestaurantPage> {
               appBar: AppBar(
                 actions:
                 [
-                  // IconButton(
-                  //     onPressed: ()
-                  //     {
-                  //       cubit.changeTheme();
-                  //     },
-                  //     icon: const Icon(Icons.sunny)
-                  // ),
+                  Visibility(
+                    visible: cubit.isCartShown,
+                    child: IconButton(
+                        onPressed: ()
+                        {
+                          navigateTo(context, const Cart() );
+                        },
+                        icon: const Icon(Icons.shopping_cart_rounded)
+                    ),
+                  ),
                 ],
               ),
 
@@ -87,8 +91,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
                         width: double.infinity,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/images/american_diner.jpg'),
+                          image:DecorationImage(
+                            // image: AssetImage('assets/images/american_diner.jpg'),
+                            image: NetworkImage(restaurant!.photo!),
                             fit: BoxFit.fitWidth,
                             opacity: 0.35,
 
