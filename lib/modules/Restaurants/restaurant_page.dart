@@ -67,7 +67,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 actions:
                 [
                   Visibility(
-                    visible: cubit.isCartShown,
+                    visible: cubit.cartMeals.isNotEmpty,
                     child: IconButton(
                         onPressed: ()
                         {
@@ -111,10 +111,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
                                   )
                               ),
 
-                              const SizedBox(height: 5,),
+                              const SizedBox(height: 8,),
 
                               const Align(
-                                alignment: AlignmentDirectional.bottomEnd,
+                                alignment: AlignmentDirectional.center,
                                 child: Text(
                                   'Delivery Cost: 2000 SYP',
                                   style: const TextStyle(

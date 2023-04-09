@@ -19,3 +19,5 @@ const mealsOffers='user/getOffers';
 const allRestaurantMeals='user/getResturentMeals';
 
 const getRestaurantById='user/getresturentById';
+
+const orderSubmit='user/createOdere';

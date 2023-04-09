@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -164,6 +165,7 @@ class HomePage extends StatelessWidget {
                                       }
                                   );
                                 },
+                                imageLink:  cubit.offersModel!.data![index].photo!,
                                 ),
                             separatorBuilder: (context,index)=> const SizedBox(width: 15,),
                             itemCount: cubit.offersModel!.data!.length
@@ -215,7 +217,7 @@ class HomePage extends StatelessWidget {
 
   Widget offerItemBuilder({
     required void Function()? function,
-
+    required String imageLink,
   }) =>
       InkWell(
         borderRadius: BorderRadius.circular(20),
@@ -228,8 +230,9 @@ class HomePage extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.blue.withOpacity(0.2),
             borderRadius: BorderRadius.circular(10),
-            image: const DecorationImage(
-                image: AssetImage('assets/images/lasagna.jpg'),
+            image: DecorationImage(
+                // image: AssetImage('assets/images/lasagna.jpg'),
+                image: CachedNetworkImageProvider(imageLink),
                 fit: BoxFit.fill,
                 opacity: 0.6,
             ),

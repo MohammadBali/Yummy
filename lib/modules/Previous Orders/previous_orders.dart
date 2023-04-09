@@ -1,4 +1,7 @@
+import 'package:yummy/shared/components/components.dart';
+
 import '../../shared/components/imports.dart';
+import '../Orders/orders.dart';
 
 class PreviousOrders extends StatelessWidget {
   const PreviousOrders({Key? key}) : super(key: key);
@@ -39,21 +42,21 @@ class PreviousOrders extends StatelessWidget {
 
                     children:
                     [
-                      orderItemBuilder(title: 'RoadHouse', date: '11/2/2023', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'RoadHouse', date: '11/2/2023', cubit: cubit, onTap: (){}, context: context, ),
 
-                      orderItemBuilder(title: 'Steak House', date: '5/2/2023', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'Steak House', date: '5/2/2023', cubit: cubit, onTap: (){}, context: context),
 
-                      orderItemBuilder(title: 'Burger King', date: '10/12/2022', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'Burger King', date: '10/12/2022', cubit: cubit, onTap: (){}, context: context),
 
-                      orderItemBuilder(title: 'Dominos Pizza', date: '27/9/2022', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'Dominos Pizza', date: '27/9/2022', cubit: cubit, onTap: (){}, context: context),
 
-                      orderItemBuilder(title: 'Chinese Rest', date: '10/12/2021', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'Chinese Rest', date: '10/12/2021', cubit: cubit, onTap: (){}, context: context),
 
-                      orderItemBuilder(title: 'Al Samah', date: '1/11/2021', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'Al Samah', date: '1/11/2021', cubit: cubit, onTap: (){}, context: context),
 
-                      orderItemBuilder(title: 'Steak House', date: '20/10/2021', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'Steak House', date: '20/10/2021', cubit: cubit, onTap: (){}, context: context),
 
-                      orderItemBuilder(title: 'Burger King', date: '10/10/2020', cubit: cubit, onTap: (){}),
+                      orderItemBuilder(title: 'Burger King', date: '10/10/2020', cubit: cubit, onTap: (){}, context: context),
                     ],
                   ),
 
@@ -71,11 +74,15 @@ class PreviousOrders extends StatelessWidget {
     required String title,
     required String date,
     required AppCubit cubit,
+    required BuildContext context,
     required void Function()? onTap,
   })
   {
     return GestureDetector(
-      onTap: onTap,
+      onTap: ()
+      {
+        navigateTo(context, const Order() );
+      }, //onTap,
       child: Container(
         height: 140,
         width: 140,

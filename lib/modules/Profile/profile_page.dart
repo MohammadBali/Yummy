@@ -2,6 +2,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:yummy/modules/Banking/BankingHome/bankingHome.dart';
 import 'package:yummy/modules/Previous%20Orders/previous_orders.dart';
 import 'package:yummy/modules/Settings/Settings.dart';
 import 'package:yummy/shared/components/components.dart';
@@ -58,11 +59,16 @@ class ProfilePage extends StatelessWidget {
 
                     const SizedBox(height: 35,),
 
+                    settingsItemBuilder(itemName: 'Banking', icon: Icons.credit_card_rounded, lista:[HexColor('7F7FD5'), HexColor('86A8E7'), HexColor('91EAE4')], mainColor: Colors.redAccent.withOpacity(0.5),func: (){navigateTo(context, BankingHome());}),
+
+                    const SizedBox(height: 35,),
+
                     settingsItemBuilder(itemName: 'Previous Orders', icon: Icons.shopping_basket_rounded, lista:[HexColor('3A1C71'), HexColor('D76D77'), HexColor('FFAF7B')],mainColor: Colors.indigoAccent.withOpacity(0.5),func: (){navigateTo(context, const PreviousOrders());}),
 
                     const SizedBox(height: 35,),
 
                     settingsItemBuilder(itemName: 'Favourite Items', icon: Icons.favorite_rounded, lista:[HexColor('EF3B36'), HexColor('FFFFFF')], mainColor: Colors.redAccent.withOpacity(0.5),func: (){}),
+
                   ],
                 ),
               ),

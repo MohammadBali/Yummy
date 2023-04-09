@@ -12,25 +12,23 @@ import 'package:yummy/shared/styles/styles.dart';
 import '../../shared/styles/colors.dart';
 
 class MealDetails extends StatelessWidget {
-
-  const MealDetails({Key? key, required this.meal, required this.isFromRestaurant}) : super(key: key);
+  const MealDetails(
+      {Key? key, required this.meal, required this.isFromRestaurant})
+      : super(key: key);
 
   final Meal meal;
   final bool isFromRestaurant;
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit,AppStates>(
-      listener: (context,state){},
-
-      builder: (context,state)
-      {
-        var cubit= AppCubit.get(context);
+    return BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var cubit = AppCubit.get(context);
         return Scaffold(
           appBar: AppBar(
-            actions:
-            [],
+            actions: [],
           ),
-
           body: Container(
             // decoration: BoxDecoration(
             //   image: DecorationImage(
@@ -42,68 +40,63 @@ class MealDetails extends StatelessWidget {
             // ),
             child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children:
-                    [
-                      mealItemBuilder(context, cubit, meal),
-                    ],
-                  ),
-                )
-            ),
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  mealItemBuilder(context, cubit, meal),
+                ],
+              ),
+            )),
           ),
-
         );
       },
     );
   }
 
-
-  Widget mealItemBuilder(BuildContext context,AppCubit cubit, Meal meal)
-  {
+  Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
-      children:
-      [
+      children: [
         Text(
           meal.name!.capitalize!,
           style: defaultMealNameTextStyle,
         ),
-
-        const SizedBox(height: 10,),
-
+        const SizedBox(
+          height: 10,
+        ),
         GestureDetector(
+          onTap: () {
+            if (isFromRestaurant == false) {
+              print('NO POP MEAL FROM RESTAURANT');
 
-          onTap: ()
-          {
-            if(isFromRestaurant==false)
-              {
-                print('NO POP MEAL FROM RESTAURANT');
-
-                cubit.getRestaurantMeals(meal.restaurantId!);
-                cubit.getRestaurant(meal.restaurantId!);
-                navigateTo(context,  RestaurantPage(restaurant: cubit.restaurantModel?.data?[0],));
-              }
-            else
-              {
-                print('POP MEAL FROM RESTAURANT');
-                Navigator.pop(context);
-              }
+              cubit.getRestaurantMeals(meal.restaurantId!);
+              cubit.getRestaurant(meal.restaurantId!);
+              navigateTo(
+                  context,
+                  RestaurantPage(
+                    restaurant: cubit.restaurantModel?.data?[0],
+                  ));
+            } else {
+              print('POP MEAL FROM RESTAURANT');
+              Navigator.pop(context);
+            }
           },
-
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Spacer(),
+              // const Spacer(),
 
               const CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage('assets/images/american_diner.jpg')
-              ),
+                  backgroundImage:
+                      AssetImage('assets/images/american_diner.jpg')),
 
-              const SizedBox(width: 15,),
+              const SizedBox(
+                width: 15,
+              ),
 
               Text(
                 meal.restaurantName!.capitalize!,
@@ -112,9 +105,9 @@ class MealDetails extends StatelessWidget {
             ],
           ),
         ),
-
-        const SizedBox(height: 20,),
-
+        const SizedBox(
+          height: 20,
+        ),
         Stack(
           alignment: AlignmentDirectional.bottomEnd,
           children: [
@@ -128,8 +121,7 @@ class MealDetails extends StatelessWidget {
                   image: NetworkImage(meal.photo!),
                   fit: BoxFit.cover,
                   isAntiAlias: true,
-                  errorBuilder: (context,object,trace)
-                  {
+                  errorBuilder: (context, object, trace) {
                     print('Error While Getting Image, ${object.toString()}');
                     return const Image(
                       image: AssetImage('assets/images/lasagna.jpg'),
@@ -140,86 +132,84 @@ class MealDetails extends StatelessWidget {
                 ),
               ),
             ),
-
             IconButton(
-                onPressed: (){},
-                icon: const Icon(
-                  Icons.favorite_border_rounded,
-                  color: Colors.red,
-                ),
-                splashRadius: 30,
+              onPressed: () {},
+              icon: const Icon(
+                Icons.favorite_border_rounded,
+                color: Colors.red,
+              ),
+              splashRadius: 30,
             ),
           ],
         ),
-
-        const SizedBox(height: 20,),
-
+        const SizedBox(
+          height: 20,
+        ),
         Text(
           meal.ingredients!,
           style: defaultDescriptionTextStyle,
           maxLines: 4,
           overflow: TextOverflow.ellipsis,
         ),
-
-        const SizedBox(height: 30,),
-
+        const SizedBox(
+          height: 30,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children:
-          [
+          children: [
             Text(
               '${meal.price!} SYP',
               style: TextStyle(
-                fontSize: meal.discount !=null ? 18 : 22,
-                fontWeight: meal.discount !=null ? FontWeight.w300 :FontWeight.bold,  //was bold
-                letterSpacing: 1,
-                color: Colors.blue,
-                decoration: meal.discount !=null ?TextDecoration.lineThrough : TextDecoration.none,
-                decorationStyle: TextDecorationStyle.wavy,
-                decorationColor: Colors.redAccent
-              ),
+                  fontSize: meal.discount != null ? 18 : 22,
+                  fontWeight:
+                      meal.discount != null ? FontWeight.w300 : FontWeight.bold,
+                  //was bold
+                  letterSpacing: 1,
+                  color: Colors.blue,
+                  decoration: meal.discount != null
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                  decorationStyle: TextDecorationStyle.wavy,
+                  decorationColor: Colors.redAccent),
             ),
-
-            const SizedBox(width: 10,),
-
+            const SizedBox(
+              width: 10,
+            ),
             ConditionalBuilder(
-                condition: meal.discount !=null,
-                builder: (context)=> Text(
-                  '${meal.price - (meal.discount * meal.price)/100} SYP',
-                  style: defaultPriceTextStyle,
-                ),
-                fallback: (context)=>const Text(''),
+              condition: meal.discount != null,
+              builder: (context) => Text(
+                '${meal.price - (meal.discount * meal.price) / 100} SYP',
+                style: defaultPriceTextStyle,
+              ),
+              fallback: (context) => const Text(''),
             ),
           ],
         ),
-
         const SizedBox(height: 30,),
 
         InkWell(
           highlightColor: Colors.deepOrange.withOpacity(0.2),
           borderRadius: BorderRadius.circular(5),
-          onTap: ()
-          {
+          onTap: () {
             cubit.addToCart(meal);
-            if(isFromRestaurant==false)
-            {
+            if (isFromRestaurant == false) {
               print('NO POP MEAL FROM RESTAURANT');
 
               cubit.getRestaurantMeals(meal.restaurantId!);
               cubit.getRestaurant(meal.restaurantId!);
-              navigateTo(context,  RestaurantPage(restaurant: cubit.restaurantModel?.data?[0],));
-            }
-            else
-            {
+              navigateTo(
+                  context,
+                  RestaurantPage(
+                    restaurant: cubit.restaurantModel?.data?[0],
+                  ));
+            } else {
               print('POP MEAL FROM RESTAURANT');
               Navigator.pop(context);
             }
-
           },
           child: Row(
             // mainAxisAlignment: MainAxisAlignment.center,
-            children:
-            [
+            children: [
               Align(
                 alignment: AlignmentDirectional.topStart,
                 child: Text(
@@ -227,13 +217,10 @@ class MealDetails extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w400,
-                      color: defaultDarkColor
-                  ),
+                      color: defaultDarkColor),
                 ),
               ),
-
               const Spacer(),
-
               Align(
                 alignment: AlignmentDirectional.topEnd,
                 child: Icon(
@@ -245,7 +232,6 @@ class MealDetails extends StatelessWidget {
           ),
         ),
       ],
-
     );
   }
 }

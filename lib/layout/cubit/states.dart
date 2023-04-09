@@ -1,4 +1,6 @@
 
+import '../../models/BankingModels/BankingLoginModel/BankingLoginModel.dart';
+
 abstract class AppStates{}
 
 class AppInitialState extends AppStates{}
@@ -150,3 +152,35 @@ class AppChangeQuantityInCartState extends AppStates{}
 class AppRemoveItemFromCartState extends AppStates{}
 
 class AppChangeCartCostState extends AppStates{}
+
+class AppSubmitCartLoadingState extends AppStates{}
+
+class AppSubmitCartSuccessState extends AppStates{
+  final int success;
+
+  AppSubmitCartSuccessState(this.success);
+}
+
+class AppSubmitCartErrorState extends AppStates{}
+
+
+//----------------------------------------------------\\
+
+//BANKING
+
+class AppBankingChangePassVisibilityState extends AppStates{}
+
+class AppBankingLoginLoadingState extends AppStates{}
+
+class AppBankingLoginSuccessState extends AppStates{
+  final BankingLoginModel model;
+
+  AppBankingLoginSuccessState(this.model);
+}
+
+class AppBankingLoginErrorState extends AppStates{
+  final String error;
+
+  AppBankingLoginErrorState(this.error);
+}
+

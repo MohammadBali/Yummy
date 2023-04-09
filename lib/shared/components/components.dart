@@ -180,6 +180,21 @@ void navigateTo( BuildContext context, Widget widget) =>Navigator.push(
 //--------------------------------------------------------------------------------------------------\\
 
 
+
+// Navigate to a screen and save the route name
+
+void navigateAndSaveRouteSettings( BuildContext context, Widget widget, String routeName) =>Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context)=>widget,
+    settings: RouteSettings(name: routeName,),
+  ),
+
+);
+
+//--------------------------------------------------------------------------------------------------\\
+
+
 // Navigate to a screen and destroy the ability to go back
 void navigateAndFinish(context,Widget widget) => Navigator.pushAndRemoveUntil(
   context,
@@ -191,7 +206,7 @@ void navigateAndFinish(context,Widget widget) => Navigator.pushAndRemoveUntil(
 //--------------------------------------------------------------------------------------------------\\
 
 //Default Divider for ListViews ...
-Widget myDivider({Color? c=Colors.grey, double padding=0}) => Container(height: 1, width: double.infinity , color:c, padding: EdgeInsets.symmetric(horizontal: padding),);
+Widget myDivider({Color? color=Colors.grey, double padding=0}) => Container(height: 1, width: double.infinity , color:color, padding: EdgeInsets.symmetric(horizontal: padding),);
 
 
 //------------------------------------------------------------------------\\
@@ -219,7 +234,14 @@ Widget mealItemBuilder(BuildContext context, AppCubit cubit, Meal meal ,{double 
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
               // image: const AssetImage('assets/images/lasagna.jpg'),
-              image: NetworkImage(meal.photo!,),
+              // image: NetworkImage(meal.photo!,),
+              image: CachedNetworkImageProvider(
+                meal.photo!,
+                errorListener: ()
+                {
+                  print('ERROR WHILE LOADING MeAL IMAGE');
+                }
+              ),
               fit: BoxFit.fitWidth,
               opacity: 0.2,
               onError:(error,stacktrace)
@@ -319,8 +341,8 @@ Widget restaurantItemBuilder(BuildContext context, AppCubit cubit, Restaurant re
             color: Colors.black.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
-              // image: const AssetImage('assets/images/american_diner.jpg'), //model.recipe!.image!
-              image: NetworkImage(rest.photo!),
+              image: CachedNetworkImageProvider(rest.photo!,),
+              //image: NetworkImage(rest.photo!),
               fit: BoxFit.fitWidth,
               opacity: 0.2,
               onError:(error,stacktrace)
