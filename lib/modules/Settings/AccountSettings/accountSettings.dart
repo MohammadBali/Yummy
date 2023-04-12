@@ -12,9 +12,8 @@ class AccountSettings extends StatefulWidget {
 }
 
 class _AccountSettingsState extends State<AccountSettings> {
-
-  String? _currentAddress;
-  // Position? _currentPosition;
+  // String? _currentAddress;
+  // // Position? _currentPosition;
 
   bool isLoading=false; //Check for getting location
 

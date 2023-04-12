@@ -150,7 +150,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                                   scrollToIndex(index);
                                 },
                                 child: Text(
-                                  "${cubit.itemsList[index]} ",
+                                  "${restaurant!.menu[index]} ",
                                   style:TextStyle(
                                       fontWeight: FontWeight.w300,
                                       fontSize: 20,
@@ -160,7 +160,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                               );
                             },
                             separatorBuilder: (context,index)=>  SizedBox(width: 10, child: Text('|', style:  TextStyle(fontSize: 20, color: steelTealColor, fontWeight: FontWeight.w500),),),
-                            itemCount: cubit.itemsList.length
+                            itemCount: restaurant!.menu.length
                         ),
                       ),
                     ),

@@ -30,13 +30,14 @@ class BankingLoginModel
 class UserBankingModel
 {
   String? name;
+  int? id;
   double? amount;
 
   UserBankingModel.fromJason(Map<String,dynamic>json)
   {
     name=json['name'];
-
     amount=json['amount'];
+    id=json['id'];
   }
 
 }

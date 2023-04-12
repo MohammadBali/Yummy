@@ -32,6 +32,8 @@ class Restaurant
   String? openingTime;
   String? closingTime;
 
+  List<String?> menu=[];
+
 
   Restaurant.fromJson(Map<String,dynamic>json)
   {
@@ -79,6 +81,12 @@ class Restaurant
     {
       closingTime=json['closing_time'];
     }
+  }
+
+
+  Restaurant.addMenu(List<String>items)
+  {
+    menu=items;
   }
 
 }

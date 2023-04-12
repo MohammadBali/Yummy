@@ -21,3 +21,11 @@ const allRestaurantMeals='user/getResturentMeals';
 const getRestaurantById='user/getresturentById';
 
 const orderSubmit='user/createOdere';
+
+const previousOrders='user/getOrdersByUserId';
+
+const allMeals='user/getAllMeals';
+
+const orderProducts='user/getProductsByOrderId';
+
+const menus='user/menusResturent';

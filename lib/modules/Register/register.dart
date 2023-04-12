@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:yummy/layout/home_layout.dart';

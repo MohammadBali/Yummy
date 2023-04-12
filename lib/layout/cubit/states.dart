@@ -78,6 +78,21 @@ class AppGetRestaurantByIDSuccessState extends AppStates {}
 
 class AppGetRestaurantByIDErrorState extends AppStates{}
 
+
+
+
+//----------------------------------------------------\\
+
+// GET ALL MEALS:
+
+class AppGetAllMealsLoadingState extends AppStates{}
+
+class AppGetAllMealsSuccessState extends AppStates{}
+
+class AppGetAllMealsErrorState extends AppStates{}
+
+
+
 //----------------------------------------------------\\
 
 // GET A MEAL:
@@ -141,6 +156,47 @@ class AppGetRestaurantMealsErrorState extends AppStates{}
 
 //----------------------------------------------------\\
 
+
+// GET RESTAURANT MENU:
+
+class AppGetRestaurantMenuLoadingState extends AppStates{}
+
+class AppGetRestaurantMenuSuccessState extends AppStates{}
+
+class AppGetRestaurantMenuErrorState extends AppStates{}
+
+
+//----------------------------------------------------\\
+
+
+
+// GET PREVIOUS ORDERS:
+
+class AppGetPreviousOrdersLoadingState extends AppStates{}
+
+class AppGetPreviousOrdersSuccessState extends AppStates{}
+
+class AppGetPreviousOrdersErrorState extends AppStates{}
+
+
+
+//----------------------------------------------------\\
+
+
+
+// GET ORDER DETAILS:
+
+class AppGetOrderDetailsLoadingState extends AppStates{}
+
+class AppGetOrderDetailsSuccessState extends AppStates{}
+
+class AppGetOrderDetailsErrorState extends AppStates{}
+
+
+//----------------------------------------------------\\
+
+
+
 // CART STATES :
 
 class AppAddToCartState extends AppStates{}
@@ -183,4 +239,13 @@ class AppBankingLoginErrorState extends AppStates{
 
   AppBankingLoginErrorState(this.error);
 }
+
+
+//Change Password
+
+class AppBankingChangePasswordLoadingState extends AppStates{}
+
+class AppBankingChangePasswordSuccessState extends AppStates{}
+
+class AppBankingChangePasswordErrorState extends AppStates{}
 

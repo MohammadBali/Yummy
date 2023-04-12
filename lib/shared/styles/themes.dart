@@ -23,7 +23,7 @@ ThemeData lightTheme(context) => ThemeData(
     bottomNavigationBarTheme:  BottomNavigationBarThemeData(
       type: BottomNavigationBarType.fixed,
       selectedItemColor: defaultColor,
-      elevation: 20,
+      elevation: 15,
     ),
 
     // floatingActionButtonTheme: const FloatingActionButtonThemeData(

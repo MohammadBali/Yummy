@@ -20,6 +20,7 @@ class ProfilePage extends StatelessWidget {
       listener: (context,state){},
       builder: (context,state)
       {
+        var cubit=AppCubit.get(context);
         return ConditionalBuilder(
             condition: AppCubit.userModel !=null,
             fallback: (context)=>Center(child: defaultProgressIndicator(context)),
@@ -63,7 +64,12 @@ class ProfilePage extends StatelessWidget {
 
                     const SizedBox(height: 35,),
 
-                    settingsItemBuilder(itemName: 'Previous Orders', icon: Icons.shopping_basket_rounded, lista:[HexColor('3A1C71'), HexColor('D76D77'), HexColor('FFAF7B')],mainColor: Colors.indigoAccent.withOpacity(0.5),func: (){navigateTo(context, const PreviousOrders());}),
+                    settingsItemBuilder(itemName: 'Previous Orders', icon: Icons.shopping_basket_rounded, lista:[HexColor('3A1C71'), HexColor('D76D77'), HexColor('FFAF7B')],mainColor: Colors.indigoAccent.withOpacity(0.5),
+                        func: ()
+                        {
+                          cubit.getPreviousOrders(AppCubit.userModel!.result!.id!);
+                          navigateTo(context, const PreviousOrders());
+                        }),
 
                     const SizedBox(height: 35,),
 

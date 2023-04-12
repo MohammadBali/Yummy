@@ -11,6 +11,8 @@ import 'package:yummy/modules/Profile/profile_page.dart';
 import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/network/remote/main_dio_helper.dart';
 import '../../models/BankingModels/BankingLoginModel/BankingLoginModel.dart';
+import '../../models/PreviousOrderDetailsModel/PreviousOrderDetailsModel.dart';
+import '../../models/PreviousOrderModel/PreviousOrderModel.dart';
 import '../../models/RestaurantsModel/Restaurant_Model.dart';
 import '../../modules/Home/home_page.dart';
 import '../../modules/Restaurants/restaurants_page.dart';
@@ -85,9 +87,7 @@ class AppCubit extends Cubit<AppStates> {
 
   static UserModel? userModel;
 
-  void getUserData(
-      String?
-          token) //Decode the Token and get the data of it, then store it in userModel
+  void getUserData(String? token) //Decode the Token and get the data of it, then store it in userModel
   {
     if (token != '') {
       emit(AppGetUserDataLoadingState());
@@ -123,6 +123,9 @@ class AppCubit extends Cubit<AppStates> {
       print('Got All Restaurants Data,${value.data}');
       allRestaurantsModel = RestaurantModel.fromJson(value.data);
       emit(AppGetAllRestaurantsSuccessState());
+      mappingRestaurantNamesToId(); //Mapping each restaurant to it's id in a Map;
+      getRestaurantMenu(); //Add Menus for each restaurant.
+
     }).catchError((error) {
       print('ERROR WHILE GETTING ALL RESTAURANTS, ${error.toString()}');
 
@@ -149,6 +152,18 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+
+  Map<int,String> restaurantsMap={};
+  void mappingRestaurantNamesToId()
+  {
+    for (var element in allRestaurantsModel!.data!)
+    {
+      restaurantsMap.addEntries({element!.id!:element.name! }.entries);
+    }
+
+    print('All RestaurantMap: $restaurantsMap');
+  }
+
   //-------------------------
 
   //Get Meal Details.
@@ -167,6 +182,9 @@ class AppCubit extends Cubit<AppStates> {
       emit(AppGetMealErrorState());
     });
   }
+
+
+  //--------------------------------------------------------------\\
 
   //Get all meals provided by a specified restaurant.
   MealModel? restaurantMeals;
@@ -205,6 +223,43 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+
+  //Get Menu for each Restaurant.
+  void getRestaurantMenu()
+  {
+    print('Getting Restaurant Menus');
+    
+    for (var element in allRestaurantsModel!.data!)
+    {
+      print('Getting Restaurant ${element!.id} Menu...');
+      emit(AppGetRestaurantMenuLoadingState());
+      
+      MainDioHelper.getData(
+        url: '$menus/${element.id}/',
+      ).then((value)
+      {
+        print('Got Menu for ${element.name}..., ${value.data}');
+
+        List<String>items=[];
+
+        value.data['data'].forEach((item)
+        {
+          items.add(item['name']);
+        });
+
+        // element=Restaurant.addMenu(items);
+
+        element.menu=items;
+
+        emit(AppGetRestaurantMenuSuccessState());
+      }).catchError((error)
+      {
+        print('ERROR WHILE GETTING RESTAURANT ${element.name} MENU, ${error.toString()}');
+        emit(AppGetRestaurantMenuErrorState());
+      });
+    }
+  }
+
   //------------------------
 
   MealModel? searchMealModel;
@@ -229,6 +284,44 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   //-------------------
+
+
+  MealModel? allMealsModel;
+  //GET ALL Meals
+  void getAllMeals()
+  {
+    emit(AppGetAllMealsLoadingState());
+
+    MainDioHelper.getData(
+      url: allMeals,
+    ).then((value)
+    {
+      print('Got All Meals, ${value.data}');
+      allMealsModel=MealModel.fromJson(value.data);
+      emit(AppGetAllMealsSuccessState());
+      mappingMealsNamesToId();
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING ALL MEALS, ${error.toString()}');
+      emit(AppGetAllMealsErrorState());
+    });
+  }
+
+
+
+  Map<int,String> mealsMap={};
+  void mappingMealsNamesToId()
+  {
+    for (var element in allMealsModel!.data!)
+    {
+      mealsMap.addEntries({element.id!:element.name! }.entries);
+    }
+
+    print('All RestaurantMap: $mealsMap');
+  }
+
+
+  //------------------------------------------------
 
   MealModel? trendyMeals;
 
@@ -270,6 +363,9 @@ class AppCubit extends Cubit<AppStates> {
       emit(AppGetOffersErrorState());
     });
   }
+
+
+
 
   //----------------------------------------------------------------------\\
 
@@ -360,7 +456,13 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppSetMarkerState());
   }
 
+
+
   //-------------------------------------------------------------------------\\
+
+
+
+
 
   // USER CART....
 
@@ -483,6 +585,82 @@ class AppCubit extends Cubit<AppStates> {
     return formulatedList;
   }
 
+  //-------------------------------------
+
+
+  //Get Previous Orders by a userId.
+  PreviousOrderModel? previousOrderModel;
+  void getPreviousOrders(int id)
+  {
+    print('Getting Previous Orders..');
+    emit(AppGetPreviousOrdersLoadingState());
+
+    MainDioHelper.getData(
+      url: '$previousOrders/$id/',
+    ).then((value)
+    {
+      print('Got Previous Orders successfully, ${value.data}');
+      previousOrderModel=PreviousOrderModel.fromJson(value.data);
+
+      //Sorting Array
+      previousOrderModel!.data.sort((a,b)
+      {
+        var adate= DateTime.parse(a!.purchaseDate!);
+        var bdate= DateTime.parse(b!.purchaseDate!);
+        return -bdate.compareTo(adate);
+      });
+
+      emit(AppGetPreviousOrdersSuccessState());
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING PREVIOUS ORDERS, ${error.toString()}');
+      emit(AppGetPreviousOrdersErrorState());
+    });
+  }
+
+
+  //-----------------------------
+
+
+  //Get Products in an order.
+
+  PreviousOrderDetailsModel? previousOrderDetailsModel;
+
+  void getOrderDetails(int orderId)
+  {
+    print('Getting Order Details...');
+    emit(AppGetOrderDetailsLoadingState());
+
+    MainDioHelper.getData(
+      url: '$orderProducts/$orderId/',
+    ).then((value)
+    {
+      print('Got Order details, ${value.data}');
+
+      previousOrderDetailsModel=PreviousOrderDetailsModel.fromJson(value.data);
+
+      emit(AppGetOrderDetailsSuccessState());
+    }).catchError((error)
+    {
+      print('ERROR WHILE GETTING ORDER DETAILS, ${error.toString()}');
+      emit(AppGetOrderDetailsErrorState());
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   //--------------------------------------------------------------------\\
@@ -491,7 +669,7 @@ class AppCubit extends Cubit<AppStates> {
 
   bool isBankPassVisible=true;
 
-  void changePassVisibility()
+  void changeBankingPassVisibility()
   {
     isBankPassVisible=!isBankPassVisible;
     emit(AppBankingChangePassVisibilityState());
@@ -499,7 +677,7 @@ class AppCubit extends Cubit<AppStates> {
 
 
   BankingLoginModel? bankingLoginModel;
-  void userLogin(String number, String password)
+  void bankingUserLogin(String number, String password)
   {
     print('in BankingLogin...');
     emit(AppBankingLoginLoadingState());
@@ -523,6 +701,32 @@ class AppCubit extends Cubit<AppStates> {
     {
       print('ERROR WHILE LOGGING IN, ${error.toString()}');
       emit(AppBankingLoginErrorState(error.toString()));
+    });
+  }
+
+  //Change User Password
+  void bankingChangePassword(String password)
+  {
+    print('in BankingChangePassword');
+    emit(AppBankingChangePasswordLoadingState());
+
+    MainDioHelper.patchData(
+        url: '',
+        data:
+        {
+          'user_id':bankingLoginModel?.userData?.id,
+          'password':password
+        },
+    ).then((value)
+    {
+      print('Got BankingChangePassword Data, ${value.data}');
+
+      emit(AppBankingChangePasswordSuccessState());
+    }).catchError((error)
+    {
+      print('ERROR WHILE CHANGING BANKING PASSWORD, ${error.toString()}');
+
+      emit(AppBankingChangePasswordErrorState());
     });
   }
 }

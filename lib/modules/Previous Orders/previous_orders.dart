@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:yummy/shared/components/components.dart';
 
 import '../../shared/components/imports.dart';
@@ -13,54 +14,54 @@ class PreviousOrders extends StatelessWidget {
       builder: (context,state)
       {
         var cubit= AppCubit.get(context);
+        var model=cubit.previousOrderModel;
         return Scaffold(
           appBar: AppBar(),
 
           body: Padding(
             padding: const EdgeInsets.all(24.0),
             child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: ConditionalBuilder(
+                condition: cubit.previousOrderModel!=null,
+                fallback: (context)=>Center(child: defaultProgressIndicator(context)),
+                builder: (context)=>Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:
+                  [
+                    Text(
+                      'Previous Orders',
+                      style: defaultHeadlineTextStyle,
+                    ),
 
-                children:
-                [
-                  Text(
-                    'Previous Orders',
-                    style: defaultHeadlineTextStyle,
-                  ),
+                    const SizedBox(height: 50,),
 
-                  const SizedBox(height: 50,),
+                    GridView.count(
+                      crossAxisCount: 2,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      childAspectRatio: 1/1,
+                      crossAxisSpacing: 22,
+                      mainAxisSpacing: 22,
+                      padding: const EdgeInsetsDirectional.symmetric(horizontal: 5),
 
-                  GridView.count(
-                    crossAxisCount: 2,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    childAspectRatio: 1/1,
-                    crossAxisSpacing: 22,
-                    mainAxisSpacing: 22,
-                    padding: const EdgeInsetsDirectional.symmetric(horizontal: 5),
+                      children:List.generate(model!.data.length, (index)
+                      {
+                        return orderItemBuilder(
+                          title: cubit.restaurantsMap[model.data[index]!.resId!] !=null ? cubit.restaurantsMap[model.data[index]!.resId!]! : 'No Data',
+                          date: model.data[index]!.purchaseDate!,
+                          cubit: cubit,
+                          context: context,
+                          onTap: ()
+                          {
+                            cubit.getOrderDetails(model.data[index]!.id!);
+                            navigateTo(context, Order(orderModel: model.data[index]!,));
+                          },
+                        );
+                      }),
+                    ),
 
-                    children:
-                    [
-                      orderItemBuilder(title: 'RoadHouse', date: '11/2/2023', cubit: cubit, onTap: (){}, context: context, ),
-
-                      orderItemBuilder(title: 'Steak House', date: '5/2/2023', cubit: cubit, onTap: (){}, context: context),
-
-                      orderItemBuilder(title: 'Burger King', date: '10/12/2022', cubit: cubit, onTap: (){}, context: context),
-
-                      orderItemBuilder(title: 'Dominos Pizza', date: '27/9/2022', cubit: cubit, onTap: (){}, context: context),
-
-                      orderItemBuilder(title: 'Chinese Rest', date: '10/12/2021', cubit: cubit, onTap: (){}, context: context),
-
-                      orderItemBuilder(title: 'Al Samah', date: '1/11/2021', cubit: cubit, onTap: (){}, context: context),
-
-                      orderItemBuilder(title: 'Steak House', date: '20/10/2021', cubit: cubit, onTap: (){}, context: context),
-
-                      orderItemBuilder(title: 'Burger King', date: '10/10/2020', cubit: cubit, onTap: (){}, context: context),
-                    ],
-                  ),
-
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -79,10 +80,7 @@ class PreviousOrders extends StatelessWidget {
   })
   {
     return GestureDetector(
-      onTap: ()
-      {
-        navigateTo(context, const Order() );
-      }, //onTap,
+      onTap: onTap, //onTap,
       child: Container(
         height: 140,
         width: 140,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,11 +7,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:material_dialogs/dialogs.dart';
 import 'package:string_extensions/string_extensions.dart';
+import 'package:vector_math/vector_math.dart' as m;
 import 'package:yummy/layout/cubit/cubit.dart';
 import 'package:yummy/models/MealModel/meal_model.dart';
 import 'package:yummy/models/RestaurantsModel/Restaurant_Model.dart';
 import 'package:yummy/shared/styles/colors.dart';
-import 'package:yummy/shared/styles/styles.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../modules/Meal_Details/meal_details.dart';
 import '../../modules/Restaurants/restaurant_page.dart';
@@ -326,6 +329,7 @@ Widget restaurantItemBuilder(BuildContext context, AppCubit cubit, Restaurant re
   return GestureDetector(
     onTap: ()
     {
+      print(rest.menu);
       cubit.getRestaurantMeals(rest.id!);
       navigateTo(context, RestaurantPage(restaurant: rest,));
     },
@@ -535,3 +539,23 @@ Widget defaultAlertDialog(
   );
 }
 
+
+//------------------------------------------------------------------------------------------\\
+
+//Calculate the distance between two positions.
+double calculateDistance(LatLng pos1, LatLng pos2)
+{
+  var lon1= m.radians(pos1.longitude);
+  var lat1= m.radians(pos1.latitude);
+
+  var lon2=m.radians(pos2.longitude);
+  var lat2=m.radians(pos2.latitude);
+
+  double dLon = lon2 - lon1;
+  double dLat = lat2 - lat1;
+  double a = pow(sin(dLat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dLon / 2),2);
+
+  double c = 2 * asin(sqrt(a));
+
+  return(c * 6371);
+}

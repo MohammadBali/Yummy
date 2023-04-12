@@ -1,10 +1,14 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:yummy/shared/components/components.dart';
 
+import '../../models/PreviousOrderDetailsModel/PreviousOrderDetailsModel.dart';
+import '../../models/PreviousOrderModel/PreviousOrderModel.dart';
 import '../../shared/components/imports.dart';
 
 class Order extends StatelessWidget {
-  const Order({Key? key}) : super(key: key);
+   Order({Key? key, required this.orderModel}) : super(key: key);
 
+   OrderData orderModel;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit,AppStates>(
@@ -13,82 +17,95 @@ class Order extends StatelessWidget {
       builder: (context,state)
       {
         var cubit= AppCubit.get(context);
-        return Scaffold(
-          appBar: AppBar(),
+        var productsModel=cubit.previousOrderDetailsModel;
+        return WillPopScope(
+          child: Scaffold(
+            appBar: AppBar(),
 
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+            body: ConditionalBuilder(
+              condition: cubit.previousOrderDetailsModel!=null,
+              fallback: (context)=>Center(child: defaultProgressIndicator(context)),
+              builder: (context)=>SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
 
-                  Center(
-                    child: Text(
-                      'Roadhouse',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,  //was bold
-                        letterSpacing: 1,
-                        color: Colors.redAccent.withOpacity(0.8),
-                        fontFamily: 'MagistralHonesty',
-                        shadows: [
-                          Shadow(color: Colors.black.withOpacity(0.5), blurRadius: 0.2),
-                        ],
+                      Center(
+                        child: Text(
+                          cubit.restaurantsMap[orderModel.resId!] !=null ? cubit.restaurantsMap[orderModel.resId!]! : 'No Data',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,  //was bold
+                            letterSpacing: 1,
+                            color: Colors.redAccent.withOpacity(0.8),
+                            fontFamily: 'MagistralHonesty',
+                            shadows: [
+                              Shadow(color: Colors.black.withOpacity(0.5), blurRadius: 0.2),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+
+                      const SizedBox(height: 10,),
+
+                      Center(
+                        child: Text(
+                          orderModel.purchaseDate!,
+                          style: defaultDescriptionTextStyle,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20,),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 60.0),
+                        child: myDivider(color: cubit.isDarkTheme? defaultDarkColor : defaultColor),
+                      ),
+
+                      const SizedBox(height: 20,),
+
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context,index)=>itemBuilder(context: context, cubit: cubit, model: productsModel.data[index]!),
+                        separatorBuilder: (context,index)
+                        {
+                          return Column(
+                            children:
+                            [
+                              const SizedBox(height: 10,),
+
+                              myDivider(
+                                  color: cubit.isDarkTheme? goldenColor : defaultDarkColor
+                              ),
+                            ],
+                          );
+                        },
+                        itemCount: productsModel!.data.length,
+                      ),
+
+                      const SizedBox(height: 25,),
+
+                      Text(
+                        'TOTAL PRICE: ${orderModel.totalCost} SYP',
+                        style: defaultPriceTextStyle,
+                      ),
+                    ],
                   ),
-
-                  const SizedBox(height: 10,),
-
-                  Center(
-                    child: Text(
-                      '23/5/2021',
-                      style: defaultDescriptionTextStyle,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20,),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 60.0),
-                    child: myDivider(color: cubit.isDarkTheme? defaultDarkColor : defaultColor),
-                  ),
-
-                  const SizedBox(height: 20,),
-
-                  ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context,index)=>itemBuilder(context: context, cubit: cubit),
-                      separatorBuilder: (context,index)
-                      {
-                        return Column(
-                          children:
-                          [
-                            const SizedBox(height: 10,),
-
-                            myDivider(
-                              color: cubit.isDarkTheme? goldenColor : defaultDarkColor
-                            ),
-                          ],
-                        );
-                      },
-                      itemCount: 4,
-                  ),
-
-                  const SizedBox(height: 25,),
-
-                  Text(
-                    'TOTAL PRICE: 35,000 SYP',
-                    style: defaultPriceTextStyle,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
+
+          onWillPop: ()async
+          {
+            cubit.previousOrderDetailsModel=null;
+            return true;
+          },
         );
       },
     );
@@ -97,6 +114,7 @@ class Order extends StatelessWidget {
   Widget itemBuilder({
   required BuildContext context,
   required AppCubit cubit,
+  required PreviousOrderData model,
 })
   {
     return Container(
@@ -111,11 +129,11 @@ class Order extends StatelessWidget {
         child: Column(
           children:
           [
-            const Expanded(
+             Expanded(
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  'Hamburger',
+                  model.name!,
                   maxLines: 1,
                   style: const TextStyle(
                     fontSize: 16,
@@ -130,7 +148,7 @@ class Order extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  '2000 SYP',
+                  '${model.price!} SYP',
                   maxLines: 1,
                     style: TextStyle(
                         fontSize: 18,
@@ -142,11 +160,11 @@ class Order extends StatelessWidget {
               ),
             ),
 
-            const Expanded(
+             Expanded(
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  'Quantity: 3',
+                  'Quantity: ${model.quantity!}',
                   maxLines: 1,
                   style: const TextStyle(
                     fontSize: 16,
