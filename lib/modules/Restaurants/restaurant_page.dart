@@ -8,6 +8,7 @@ import 'package:yummy/layout/cubit/states.dart';
 import 'package:yummy/models/RestaurantsModel/Restaurant_Model.dart';
 import 'package:yummy/shared/components/components.dart';
 import 'package:yummy/shared/styles/styles.dart';
+import 'package:latlong2/latlong.dart';
 import '../../models/MealModel/meal_model.dart';
 import '../../shared/styles/colors.dart';
 import '../Cart/cart.dart';
@@ -29,6 +30,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
   final ItemScrollController itemScrollController = ItemScrollController();
 
+  //late double deliveryCost=0; //Delivery Cost
+
 
   void scrollToIndex(int index)
   {
@@ -42,6 +45,12 @@ class _RestaurantPageState extends State<RestaurantPage> {
   void initState()
   {
     super.initState();
+
+    double distance= calculateDistance( LatLng(widget.restaurant!.latitude!, widget.restaurant!.longitude!), LatLng(AppCubit.userModel!.result!.latitude!, AppCubit.userModel!.result!.longitude!) );
+
+    //deliveryCost= deliveryCostCalculator(distance).roundToDouble();
+
+    AppCubit.setDeliveryCost(distance);
   }
 
   @override
@@ -113,10 +122,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
                               const SizedBox(height: 8,),
 
-                              const Align(
+                              Align(
                                 alignment: AlignmentDirectional.center,
                                 child: Text(
-                                  'Delivery Cost: 2000 SYP',
+                                  'Delivery Cost: ${AppCubit.deliveryCost} SYP',
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500
@@ -150,7 +159,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                                   scrollToIndex(index);
                                 },
                                 child: Text(
-                                  "${restaurant!.menu[index]} ",
+                                  "${restaurant!.menu[index]!.name} ",
                                   style:TextStyle(
                                       fontWeight: FontWeight.w300,
                                       fontSize: 20,
@@ -169,8 +178,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       child: PageView.builder(
                         scrollDirection: Axis.horizontal,
                         controller: pageController,
-                        itemCount: cubit.itemsList.length,
-                        itemBuilder: (context,index)=> restaurantMealsItemBuilder(context,cubit,cubit.restaurantMeals!.data!),
+                        itemCount: restaurant!.menu.length,
+                        itemBuilder: (context,index)=> restaurantMealsItemBuilder(context,cubit, cubit.mealsForMenuId(restaurant!.menu[index]!.id! ) ),   //cubit.restaurantMeals!.data!),
                         onPageChanged: (int index)
                         {
                           scrollToIndex(index);

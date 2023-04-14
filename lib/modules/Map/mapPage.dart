@@ -100,6 +100,8 @@ class _MapPageState extends State<MapPage> {
                             onLongPress: (tapPosition, LatLng position)
                             {
                               defaultToast(msg: 'Setting Marker...');
+
+                              print('Blue marker location is: Longitude :${position.longitude}, Latitude is: ${position.latitude}');
                               cubit.setMarker(position.longitude, position.latitude);
 
                               // showModalBottomSheet(

@@ -219,6 +219,16 @@ class AppSubmitCartSuccessState extends AppStates{
 
 class AppSubmitCartErrorState extends AppStates{}
 
+class AppCartItemIsFoundState extends AppStates{}
+
+
+
+//-------------------------------------------------------\\
+
+//Delivery Cost
+
+class AppSetDeliveryCostState extends AppStates{}
+
 
 //----------------------------------------------------\\
 

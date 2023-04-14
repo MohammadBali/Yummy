@@ -1,4 +1,5 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:yummy/shared/components/components.dart';
 
 import '../../models/PreviousOrderDetailsModel/PreviousOrderDetailsModel.dart';
@@ -86,6 +87,20 @@ class Order extends StatelessWidget {
                           );
                         },
                         itemCount: productsModel!.data.length,
+                      ),
+
+                      const SizedBox(height: 25,),
+
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Status: ${orderModel.status.capitalize}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 1,
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 25,),

@@ -240,11 +240,11 @@ class AppCubit extends Cubit<AppStates> {
       {
         print('Got Menu for ${element.name}..., ${value.data}');
 
-        List<String>items=[];
+        List<MenuModel>items=[];
 
         value.data['data'].forEach((item)
         {
-          items.add(item['name']);
+          items.add( MenuModel.addMenuValues(item['name'], item['id']) );
         });
 
         // element=Restaurant.addMenu(items);
@@ -258,6 +258,24 @@ class AppCubit extends Cubit<AppStates> {
         emit(AppGetRestaurantMenuErrorState());
       });
     }
+  }
+
+
+  //----------------------------------
+
+  //Will Return all the meals having this menu-Id.
+
+  List<Meal> mealsForMenuId(int id)
+  {
+    List<Meal> list=[];
+    for(var element in restaurantMeals!.data!)
+      {
+        if(element.menuId==id)
+          {
+            list.add(element);
+          }
+      }
+    return list;
   }
 
   //------------------------
@@ -473,8 +491,8 @@ class AppCubit extends Cubit<AppStates> {
   List<Meal> cartMeals = [];
 
   void addToCart(Meal meal) {
-    print(
-        'Adding a meal to cart..., number of elements before adding is: ${cartMeals.length}');
+    print('Adding a meal to cart..., number of elements before adding is: ${cartMeals.length}');
+    print('Current meal id is: ${meal.id}');
 
     if (isCartShown == false) {
       isCartShown = true;
@@ -482,16 +500,21 @@ class AppCubit extends Cubit<AppStates> {
     }
 
     bool isFound = false;
-    for (var element in cartMeals) {
-      if (element.id! == meal.id!) {
+    for (var element in cartMeals)
+    {
+      if (element.id == meal.id)
+      {
+        print('Element was here before, increasing quantity now...');
         element.quantity++;
+        isFound = true;
+        emit(AppCartItemIsFoundState());
         totalCartCost();
-        isFound == true;
         break;
       }
     }
 
     if (isFound == false) {
+      print('Element wasnt here before, adding new element to the list');
       meal.quantity = 1;
       cartMeals.add(meal);
       totalCartCost();
@@ -528,6 +551,7 @@ class AppCubit extends Cubit<AppStates> {
         cartCost = cartCost + (element.quantity * element.price!);
       }
     }
+    cartCost=cartCost+deliveryCost;
 
     emit(AppChangeCartCostState());
   }
@@ -647,20 +671,14 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  static double deliveryCost=0;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  static void setDeliveryCost(double distance)
+  {
+    deliveryCost=0;
+    deliveryCost= deliveryCostCalculator(distance).roundToDouble();
+    //emit(AppSetDeliveryCostState());
+  }
 
 
   //--------------------------------------------------------------------\\

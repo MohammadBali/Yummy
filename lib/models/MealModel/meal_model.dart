@@ -33,6 +33,7 @@ class Meal
   int? count;
   String? restaurantName;
   dynamic discount;
+  int? menuId;
 
   int quantity=0; //Quantity of this item to be sent in order.
 
@@ -86,6 +87,11 @@ class Meal
     if(json['discount'] !=null)
     {
       discount=json['discount'];
+    }
+
+    if(json['menu_id'] !=null)
+    {
+      menuId=json['menu_id'];
     }
   }
 }

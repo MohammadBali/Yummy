@@ -32,7 +32,7 @@ class Restaurant
   String? openingTime;
   String? closingTime;
 
-  List<String?> menu=[];
+  List<MenuModel?> menu=[];
 
 
   Restaurant.fromJson(Map<String,dynamic>json)
@@ -84,9 +84,22 @@ class Restaurant
   }
 
 
-  Restaurant.addMenu(List<String>items)
+  Restaurant.addMenu(List<MenuModel>items)
   {
     menu=items;
   }
 
+}
+
+
+class MenuModel
+{
+  String? name;
+  int? id;
+
+  MenuModel.addMenuValues(String n, int i)
+  {
+    name=n;
+    id=i;
+  }
 }

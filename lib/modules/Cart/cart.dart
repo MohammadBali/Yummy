@@ -158,6 +158,16 @@ class Cart extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
+
+                    Text(
+                      'Delivery Cost is : ${AppCubit.deliveryCost} SYP',
+                      style: defaultDescriptionTextStyle,
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+
                     Text(
                       'TOTAL PRICE: ${cubit.cartCost} SYP',
                       style: defaultPriceTextStyle,
