@@ -19,6 +19,11 @@ class MainDioHelper
     );
   }
 
+  static void setBaseUrl(String url)
+  {
+    dio?.options.baseUrl=url;
+  }
+
   static Future<Response> getData({required String url,  Map<String,dynamic>? query, String lang='en', String? token,}) async
   {
     dio?.options.headers=
@@ -37,14 +42,18 @@ class MainDioHelper
 
 
   static Future<Response> postData(
-      {required String url, Map<String,dynamic>?query,  required Map<String,dynamic> data, String lang='en', String? token, bool isStatusCheck=false}) async
+      {required String url, Map<String,dynamic>?query,  required Map<String,dynamic> data, String lang='en', String? token, bool isStatusCheck=false, String? baseUrl}) async
   {
+    if(baseUrl!=null)
+      {
+        dio?.options.baseUrl=baseUrl;
+      }
     dio?.options.headers=
-    {
-      'Accept':'application/json',
-      'Connection' : 'keep-alive',
-      'Authorization': 'Bearer $token',
-    };
+      {
+        'Accept':'application/json',
+        'Connection' : 'keep-alive',
+        'Authorization': 'Bearer $token',
+      };
 
     if(isStatusCheck == true)  //Allow Status 422,200,201 for Register and Login Errors.
       {

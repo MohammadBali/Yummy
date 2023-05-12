@@ -541,7 +541,7 @@ Widget defaultAlertDialog(
 
 double calculateDistance(LatLng pos1, LatLng pos2)
 {
-  print('User Data: Latitude: ${pos1.latitude}, Longitude:${pos1.longitude}\nRestaurant Data: Latitude:${pos2.latitude}, Longitude:${pos2.longitude}');
+  print('Restaurant Data: Latitude: ${pos1.latitude}, Longitude:${pos1.longitude}\nUser Data: Latitude:${pos2.latitude}, Longitude:${pos2.longitude}');
 
   double d= Geolocator.distanceBetween(pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);  //distance(pos1.latitude,pos1.longitude, pos2.latitude,pos2.longitude);
 

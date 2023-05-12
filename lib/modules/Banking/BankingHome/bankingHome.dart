@@ -1,4 +1,5 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 import '../../../shared/components/components.dart';
 import '../../../shared/components/constants.dart';
@@ -9,7 +10,7 @@ import '../BankingChangePersonalInfo/Banking_Personal_Info.dart';
 class BankingHome extends StatelessWidget {
   BankingHome({Key? key, this.isOrder = false}) : super(key: key);
 
-  TextEditingController idController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
@@ -24,7 +25,8 @@ class BankingHome extends StatelessWidget {
           defaultToast(msg: state.error, state: ToastStates.error);
         }
 
-        if (state is AppBankingLoginSuccessState) {
+        if (state is AppBankingLoginSuccessState)
+        {
           if (state.model.success == 1) {
             defaultToast(msg: 'Success', state: ToastStates.success);
 
@@ -34,21 +36,28 @@ class BankingHome extends StatelessWidget {
 
               if (isOrder == true) //If Coming from an Order, then do something
               {
-                AppCubit.get(context).submitOrder();
+                AppCubit.get(context).submitCreditCardOrder(
+                    token: bankingToken,
+                    restaurantBankId: AppCubit.get(context).getRestaurantBankIdFromId(AppCubit.get(context).cartMeals[0].restaurantId!),
+                    userBankId: AppCubit.get(context).userBankingModel!.id!);
+
+                Navigator.of(context).popUntil((route) => route.isFirst);
               }
-            }).catchError((error) {
+              }
+            ).catchError((error) {
               print(
                   'ERROR WHILE CACHING BANKING TOKEN IN LOGIN, ${error.toString()}');
             });
           }
         }
       },
+
       builder: (context, state) {
         var cubit = AppCubit.get(context);
         return Scaffold(
           appBar: AppBar(),
           body: ConditionalBuilder(
-            condition: true, //cubit.bankingLoginModel!=null,
+            condition: cubit.userBankingModel!=null, //true
             builder: (context)
             {
               return SingleChildScrollView(
@@ -70,12 +79,37 @@ class BankingHome extends StatelessWidget {
                       Row(
                         children: [
                           Text(
+                            "Owner's Name:",
+                            style: defaultRestaurantNameInMealTextStyle,
+                          ),
+                          const Spacer(),
+                          Text(
+                            '${cubit.userBankingModel!.name.capitalize}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: cubit.isDarkTheme
+                                  ? defaultDarkColor
+                                  : defaultColor,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+
+
+                      const SizedBox(
+                        height: 45,
+                      ),
+
+                      Row(
+                        children: [
+                          Text(
                             'Your ID:',
                             style: defaultRestaurantNameInMealTextStyle,
                           ),
                           const Spacer(),
                           Text(
-                            '0101511068',
+                            '${cubit.userBankingModel!.id!}',
                             style: TextStyle(
                               fontSize: 18,
                               color: cubit.isDarkTheme
@@ -135,7 +169,7 @@ class BankingHome extends StatelessWidget {
                           const Spacer(),
 
                           Text(
-                            '45,000 SYP',
+                            '${cubit.userBankingModel!.balance} SYP',
                             style: TextStyle(
                               fontSize: 20,
                               color: steelTealColor,
@@ -145,11 +179,27 @@ class BankingHome extends StatelessWidget {
                         ],
                       ),
 
+                      const SizedBox(height: 50,),
+
+                      Center(
+                        child: SizedBox(
+                          width: 150,
+                          child: defaultButton(
+                            title: 'LOGOUT',
+                            onTap: ()
+                            {
+                              cubit.bankingLogout();
+                            },
+                          ),
+                        ),
+                      ),
+
                     ],
                   ),
                 ),
               );
             },
+
             fallback: (context) => SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -170,9 +220,11 @@ class BankingHome extends StatelessWidget {
                           ),
                         ),
                       ),
+
                       const SizedBox(
                         height: 50,
                       ),
+
                       Text(
                         'Enter your credentials to pay per debut cards',
                         style: Theme.of(context)
@@ -180,14 +232,16 @@ class BankingHome extends StatelessWidget {
                             .titleMedium
                             ?.copyWith(color: Colors.blueGrey),
                       ),
+
                       const SizedBox(
                         height: 50,
                       ),
+
                       defaultFormField(
-                          controller: idController,
-                          keyboard: TextInputType.number,
-                          label: 'Card ID',
-                          prefix: Icons.numbers_rounded,
+                          controller: usernameController,
+                          keyboard: TextInputType.text,
+                          label: 'Card Username',
+                          prefix: Icons.person_rounded,
                           borderRadius: 10,
                           validate: (value) {
                             if (value!.isEmpty) {
@@ -195,9 +249,11 @@ class BankingHome extends StatelessWidget {
                             }
                             return null;
                           }),
+
                       const SizedBox(
                         height: 35,
                       ),
+
                       defaultFormField(
                         controller: passwordController,
                         keyboard: TextInputType.text,
@@ -226,9 +282,11 @@ class BankingHome extends StatelessWidget {
                       const SizedBox(
                         height: 25,
                       ),
+
                       const SizedBox(
                         height: 25,
                       ),
+
                       ConditionalBuilder(
                           condition: state is! AppBankingLoginLoadingState,
                           builder: (context) => Center(
@@ -237,7 +295,7 @@ class BankingHome extends StatelessWidget {
                                     onTap: () {
                                       if (formKey.currentState!.validate()) {
                                         cubit.bankingUserLogin(
-                                          idController.value.text,
+                                          usernameController.value.text,
                                           passwordController.value.text,
                                         );
                                       }

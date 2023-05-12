@@ -31,6 +31,7 @@ class Restaurant
   double? latitude;
   String? openingTime;
   String? closingTime;
+  int? bankId;
 
   List<MenuModel?> menu=[];
 
@@ -80,6 +81,11 @@ class Restaurant
     if(json['closing_time']!=null)
     {
       closingTime=json['closing_time'];
+    }
+
+    if(json['bank_id']!=null)
+    {
+      bankId=json['bank_id'];
     }
   }
 

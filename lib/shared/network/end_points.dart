@@ -1,5 +1,7 @@
 const String localhost='http://10.0.2.2:3000';
 
+const String bankingLocalHost='http://10.0.2.2:4000';
+
 const login='user/login';
 
 const register='user/';

@@ -222,6 +222,19 @@ class AppSubmitCartErrorState extends AppStates{}
 class AppCartItemIsFoundState extends AppStates{}
 
 
+//--------------------------------------------------\\
+
+class AppCreditCardLoadingState extends AppStates{}
+
+class AppCreditCardSuccessState extends AppStates{
+  final int success;
+
+  AppCreditCardSuccessState(this.success);
+}
+
+class AppCreditCardErrorState extends AppStates{}
+
+
 
 //-------------------------------------------------------\\
 
@@ -250,6 +263,7 @@ class AppBankingLoginErrorState extends AppStates{
   AppBankingLoginErrorState(this.error);
 }
 
+//----------------------------------------------------
 
 //Change Password
 
@@ -259,3 +273,20 @@ class AppBankingChangePasswordSuccessState extends AppStates{}
 
 class AppBankingChangePasswordErrorState extends AppStates{}
 
+//----------------------------------------------------
+
+// GET USER DATA
+
+class AppBankingGetUserDataLoadingState extends AppStates{}
+
+class AppBankingGetUserDataSuccessState extends AppStates{}
+
+class AppBankingGetUserDataErrorState extends AppStates{}
+
+//----------------------------------------------------
+
+// BANKING LOGOUT
+
+class AppBankingLogoutState extends AppStates{}
+
+class AppBankingClearCartState extends AppStates{}

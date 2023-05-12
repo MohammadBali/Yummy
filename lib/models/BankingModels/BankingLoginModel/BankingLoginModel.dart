@@ -3,7 +3,6 @@ class BankingLoginModel
   int? success;
   String? message;
   String? token;
-  UserBankingModel? userData;
 
   BankingLoginModel.fromJson(Map<String,dynamic>json)
   {
@@ -26,17 +25,16 @@ class BankingLoginModel
 
 }
 
-
 class UserBankingModel
 {
   String? name;
   int? id;
-  double? amount;
+  dynamic balance;
 
-  UserBankingModel.fromJason(Map<String,dynamic>json)
+  UserBankingModel.fromJson(Map<String,dynamic>json)
   {
-    name=json['name'];
-    amount=json['amount'];
+    name=json['user_name'];
+    balance=json['balance'];
     id=json['id'];
   }
 

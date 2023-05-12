@@ -9,6 +9,7 @@ import 'package:yummy/models/MealModel/meal_model.dart';
 import 'package:yummy/models/UserDataModel/UserDataModel.dart';
 import 'package:yummy/modules/Profile/profile_page.dart';
 import 'package:yummy/shared/components/components.dart';
+import 'package:yummy/shared/components/constants.dart';
 import 'package:yummy/shared/network/remote/main_dio_helper.dart';
 import '../../models/BankingModels/BankingLoginModel/BankingLoginModel.dart';
 import '../../models/PreviousOrderDetailsModel/PreviousOrderDetailsModel.dart';
@@ -92,8 +93,7 @@ class AppCubit extends Cubit<AppStates> {
     if (token != '') {
       emit(AppGetUserDataLoadingState());
       try {
-        Map<String, dynamic> dToken =
-            JwtDecoder.decode(token!); //Decode the Token to get Data
+        Map<String, dynamic> dToken = JwtDecoder.decode(token!); //Decode the Token to get Data
         print('Decoded User Data Successfully in AppCubit, $dToken');
         userModel = UserModel.fromJson(dToken);
 
@@ -162,6 +162,19 @@ class AppCubit extends Cubit<AppStates> {
     }
 
     print('All RestaurantMap: $restaurantsMap');
+  }
+
+  // Get Restaurant Bank Id from it's Id.
+  int getRestaurantBankIdFromId(int id)
+  {
+    for (var element in allRestaurantsModel!.data!)
+      {
+        if(element!.id! == id)
+          {
+            return element.bankId!;
+          }
+      }
+    return -1;
   }
 
   //-------------------------
@@ -474,12 +487,7 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppSetMarkerState());
   }
 
-
-
   //-------------------------------------------------------------------------\\
-
-
-
 
 
   // USER CART....
@@ -556,7 +564,7 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppChangeCartCostState());
   }
 
-  void submitOrder()
+  void submitCashOrder()
   {
     print('Submitting order...');
 
@@ -579,7 +587,7 @@ class AppCubit extends Cubit<AppStates> {
       defaultToast(msg: value.data['message']);
 
       emit(AppSubmitCartSuccessState(value.data['success']));
-
+      clearCart();
 
     }).catchError((error)
     {
@@ -591,6 +599,53 @@ class AppCubit extends Cubit<AppStates> {
     });
 
 
+  }
+
+  void submitCreditCardOrder({required String token, required int restaurantBankId, required int userBankId})
+  {
+    if(restaurantBankId != -1)
+      {
+        print('Submitting Credit Card Order...');
+        print('Restaurant Bank ID is : $restaurantBankId\nUser Bank ID is: $userBankId');
+
+        emit(AppCreditCardLoadingState());
+
+        MainDioHelper.postData(
+          url: orderSubmit,
+          data:
+          {
+            'user_id':userModel!.result!.id!,
+            'res_id':cartMeals[0].restaurantId,
+            'purchase_date':DateFormat('yyyy-MM-dd').format(DateTime.now()) ,
+
+            'total_cost':cartCost,
+            'payment_method':'e-pay',
+            'order_items':formattedCartItems(),
+
+            'payment-token':token,
+            'resturent_bank_id':restaurantBankId,
+            'user_bank_id':userBankId,
+          },
+        ).then((value)
+        {
+          print('Submitted Order via Credit Card successfully, ${value.data}');
+          defaultToast(msg: value.data['message']);
+
+          emit(AppCreditCardSuccessState(value.data['success']));
+
+          clearCart();
+
+        }).catchError((error)
+        {
+          print('ERROR WHILE SUBMITTING CREDIT CARD ORDER, ${error.toString()}');
+          emit(AppCreditCardErrorState());
+        });
+
+      }
+    else
+      {
+        print('Restaurant Bank ID is not correct.');
+      }
   }
 
   //FormatCartItems into a list of product_id and quantity
@@ -640,6 +695,15 @@ class AppCubit extends Cubit<AppStates> {
       print('ERROR WHILE GETTING PREVIOUS ORDERS, ${error.toString()}');
       emit(AppGetPreviousOrdersErrorState());
     });
+  }
+
+  //Clear Cart
+  void clearCart()
+  {
+    cartMeals.clear();
+    cartCost=0;
+
+    emit(AppBankingClearCartState());
   }
 
 
@@ -695,15 +759,17 @@ class AppCubit extends Cubit<AppStates> {
 
 
   BankingLoginModel? bankingLoginModel;
-  void bankingUserLogin(String number, String password)
+  void bankingUserLogin(String username, String password)
   {
     print('in BankingLogin...');
     emit(AppBankingLoginLoadingState());
 
     MainDioHelper.postData(
       url: login,
-      data: {
-        'number':number,
+      baseUrl: '$bankingLocalHost/api/',  //Changing the baseUrl because banking is another database.
+      data:
+      {
+        'user_name':username,
         'password':password,
       },
     ).then((value)
@@ -712,7 +778,9 @@ class AppCubit extends Cubit<AppStates> {
 
       bankingLoginModel=BankingLoginModel.fromJson(value.data);
 
-      // AppCubit().getUserData(bankingLoginModel?.token);
+      MainDioHelper.setBaseUrl('$localhost/api/'); //Returning BaseURL to default.
+
+      getBankingUserData(bankingLoginModel!.token!);
 
       emit(AppBankingLoginSuccessState(bankingLoginModel!));
     }).catchError((error)
@@ -732,7 +800,7 @@ class AppCubit extends Cubit<AppStates> {
         url: '',
         data:
         {
-          'user_id':bankingLoginModel?.userData?.id,
+          //'user_id':bankingLoginModel?.userData?.id,
           'password':password
         },
     ).then((value)
@@ -746,5 +814,39 @@ class AppCubit extends Cubit<AppStates> {
 
       emit(AppBankingChangePasswordErrorState());
     });
+  }
+
+
+  // Get Banking Data
+
+  UserBankingModel? userBankingModel;
+  void getBankingUserData(String bankingToken)
+  {
+    if(bankingToken !='')
+      {
+        emit(AppBankingGetUserDataLoadingState());
+        try {
+          Map<String, dynamic> mToken = JwtDecoder.decode(bankingToken); //Decode the Token to get Data
+          print('Decoded User Banking Data Successfully in AppCubit, $mToken');
+          userBankingModel = UserBankingModel.fromJson(mToken['result']);
+
+          emit(AppBankingGetUserDataSuccessState());
+        } catch (error) {
+          print('ERROR WHILE DECODING JWT, ${error.toString()}');
+          emit(AppBankingGetUserDataErrorState());
+        }
+      }
+  }
+
+
+  //Logout and clear tokens.
+  void bankingLogout()
+  {
+    userBankingModel=null;
+    bankingLoginModel=null;
+    bankingToken='';
+    emit(AppBankingLogoutState());
+
+    defaultToast(msg: 'Logged Out Successfully');
   }
 }

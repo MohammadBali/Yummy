@@ -1,7 +1,9 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:yummy/shared/components/components.dart';
 
 import '../../models/MealModel/meal_model.dart';
+import '../../shared/components/constants.dart';
 import '../../shared/components/imports.dart';
 import '../Banking/BankingHome/bankingHome.dart';
 
@@ -102,7 +104,7 @@ class Cart extends StatelessWidget {
 
                                                   onTap: ()
                                                   {
-                                                    cubit.submitOrder();
+                                                    cubit.submitCashOrder();
                                                     Navigator.of(context).popUntil((route) => route.isFirst);
                                                   },
                                                 ),
@@ -114,7 +116,30 @@ class Cart extends StatelessWidget {
                                                 child: GestureDetector(
                                                   onTap:()
                                                   {
-                                                    navigateTo(context, BankingHome(isOrder: true,) );
+                                                    if(bankingToken !='')
+                                                      {
+                                                        print('Banking Token is :$bankingToken');
+                                                        if(JwtDecoder.isExpired(bankingToken) ==false) //Checking if BankingToken is not expired
+                                                          {
+                                                            defaultToast(msg:'Checking for Banking Credentials');
+                                                            cubit.submitCreditCardOrder(
+                                                                token: bankingToken,
+                                                                restaurantBankId: cubit.getRestaurantBankIdFromId(cubit.cartMeals[0].restaurantId!),
+                                                                userBankId: cubit.userBankingModel!.id!);
+
+                                                            Navigator.of(context).popUntil((route) => route.isFirst);
+                                                          }
+                                                        else
+                                                          {
+                                                            navigateTo(context, BankingHome(isOrder: true,) );
+                                                          }
+                                                      }
+
+                                                    else
+                                                      {
+                                                        defaultToast(msg: 'Enter Banking Credentials');
+                                                        navigateTo(context, BankingHome(isOrder: true,) );
+                                                      }
                                                   },
                                                   child: Container(
                                                     margin: const EdgeInsets.all(15.0),
