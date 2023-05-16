@@ -635,6 +635,8 @@ class AppCubit extends Cubit<AppStates> {
 
           clearCart();
 
+          bankingLogout(); //User Banking Account will log out after purchasing.
+
         }).catchError((error)
         {
           print('ERROR WHILE SUBMITTING CREDIT CARD ORDER, ${error.toString()}');
