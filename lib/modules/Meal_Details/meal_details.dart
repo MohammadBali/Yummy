@@ -29,27 +29,18 @@ class MealDetails extends StatelessWidget {
           appBar: AppBar(
             actions: [],
           ),
-          body: Container(
-            // decoration: BoxDecoration(
-            //   image: DecorationImage(
-            //     image: AssetImage('assets/images/sketch.jpg',),
-            //     repeat: ImageRepeat.repeatY,
-            //     opacity: 0.1,
-            //     fit: BoxFit.contain
-            //   )
-            // ),
-            child: SingleChildScrollView(
-                child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  mealItemBuilder(context, cubit, meal),
-                ],
-              ),
-            )),
-          ),
+          body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children:
+                  [
+                    mealItemBuilder(context, cubit, meal),
+                  ],
+                ),
+          )),
         );
       },
     );
@@ -69,17 +60,14 @@ class MealDetails extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            if (isFromRestaurant == false) {
+            if (isFromRestaurant == false)
+            {
               print('NO POP MEAL FROM RESTAURANT');
-
               cubit.getRestaurantMeals(meal.restaurantId!);
-              cubit.getRestaurant(meal.restaurantId!);
-              navigateTo(
-                  context,
-                  RestaurantPage(
-                    restaurant: cubit.restaurantModel?.data?[0],
-                  ));
-            } else {
+              cubit.getRestaurant(meal.restaurantId!, context:context, isSearch: true);
+            }
+            else
+            {
               print('POP MEAL FROM RESTAURANT');
               Navigator.pop(context);
             }
@@ -192,17 +180,15 @@ class MealDetails extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
           onTap: () {
             cubit.addToCart(meal);
-            if (isFromRestaurant == false) {
+            if (isFromRestaurant == false)
+            {
               print('NO POP MEAL FROM RESTAURANT');
 
               cubit.getRestaurantMeals(meal.restaurantId!);
-              cubit.getRestaurant(meal.restaurantId!);
-              navigateTo(
-                  context,
-                  RestaurantPage(
-                    restaurant: cubit.restaurantModel?.data?[0],
-                  ));
-            } else {
+              cubit.getRestaurant(meal.restaurantId!, context:context, isSearch: true);
+            }
+            else
+            {
               print('POP MEAL FROM RESTAURANT');
               Navigator.pop(context);
             }

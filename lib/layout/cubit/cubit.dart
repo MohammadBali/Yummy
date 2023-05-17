@@ -16,6 +16,7 @@ import '../../models/PreviousOrderDetailsModel/PreviousOrderDetailsModel.dart';
 import '../../models/PreviousOrderModel/PreviousOrderModel.dart';
 import '../../models/RestaurantsModel/Restaurant_Model.dart';
 import '../../modules/Home/home_page.dart';
+import '../../modules/Restaurants/restaurant_page.dart';
 import '../../modules/Restaurants/restaurants_page.dart';
 import '../../shared/network/end_points.dart';
 import '../../shared/network/local/cache_helper.dart';
@@ -210,8 +211,8 @@ class AppCubit extends Cubit<AppStates> {
       print('Got Restaurant meals data, ${value.data}');
 
       restaurantMeals = MealModel.fromJson(value.data);
-
       emit(AppGetRestaurantMealsSuccessState());
+
     }).catchError((error) {
       print('ERROR WHILE GETTING RESTAURANT MEALS, ${error.toString()}');
       emit(AppGetRestaurantMealsErrorState());
@@ -220,8 +221,8 @@ class AppCubit extends Cubit<AppStates> {
 
   RestaurantModel? restaurantModel;
 
-  void getRestaurant(int id) {
-    print('In Getting a restaurant thorugh ID...');
+  void getRestaurant(int id, {required BuildContext context, bool isSearch=false}) {
+    print('In Getting a restaurant through ID...');
     emit(AppGetRestaurantByIDLoadingState());
 
     MainDioHelper.getData(url: '$getRestaurantById/$id/').then((value) {
@@ -229,6 +230,12 @@ class AppCubit extends Cubit<AppStates> {
 
       restaurantModel = RestaurantModel.fromJson(value.data);
       emit(AppGetRestaurantByIDSuccessState());
+
+      if(isSearch)
+        {
+          getRestaurantMenu();
+          getARestaurantMenu(id, context: context, isFire: true);
+        }
     }).catchError((error) {
       print('ERROR WHILE GETTING A RESTAURANT BY ID, ${error.toString()}');
 
@@ -273,6 +280,48 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
+
+  void getARestaurantMenu(int id, {bool isFire=false, required BuildContext context})
+  {
+    print('Getting Restaurant with ID $id Menu');
+
+    for (var element in allRestaurantsModel!.data!)
+    {
+      if(element!.id == id)
+        {
+          emit(AppGetRestaurantMenuLoadingState());
+
+          MainDioHelper.getData(
+            url: '$menus/${element.id}/',
+          ).then((value)
+          {
+            print('Got Menu for ${element.name}..., ${value.data}');
+
+            List<MenuModel>items=[];
+
+            value.data['data'].forEach((item)
+            {
+              items.add( MenuModel.addMenuValues(item['name'], item['id']) );
+            });
+
+            // element=Restaurant.addMenu(items);
+
+            element.menu=items;
+            restaurantModel?.data![0]?.menu=items;
+            emit(AppGetRestaurantMenuSuccessState());
+
+            if(isFire)
+              {
+                navigateTo( context, RestaurantPage(restaurant: restaurantModel?.data![0],));
+              }
+          }).catchError((error)
+          {
+            print('ERROR WHILE GETTING RESTAURANT ${element.name} MENU, ${error.toString()}');
+            emit(AppGetRestaurantMenuErrorState());
+          });
+        }
+    }
+  }
 
   //----------------------------------
 

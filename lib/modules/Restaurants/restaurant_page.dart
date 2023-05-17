@@ -51,6 +51,11 @@ class _RestaurantPageState extends State<RestaurantPage> {
     //deliveryCost= deliveryCostCalculator(distance).roundToDouble();
 
     AppCubit.setDeliveryCost(distance);
+
+    if(widget.restaurant?.menu !=null)
+      {
+        print("MENU ITEMS ARE: ${widget.restaurant?.menu}");
+      }
   }
 
   @override
