@@ -1,6 +1,6 @@
-const String localhost= 'http://192.168.1.11:3000'; //'http://10.0.2.2:3000'; //'http://127.0.0.1:3000'; //'http://192.168.1.11:3000';
+const String localhost= 'http://10.0.2.2:3000'; //'http://127.0.0.1:3000'; //'http://192.168.1.11:3000';
 
-const String bankingLocalHost= 'http://192.168.1.11:4000'; //'http://10.0.2.2:4000'; //'http://127.0.0.1:4000';  //'http://192.168.1.11:4000';
+const String bankingLocalHost= 'http://10.0.2.2:4000'; //'http://127.0.0.1:4000';  //'http://192.168.1.11:4000';
 
 const login='user/login';
 
